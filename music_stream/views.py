@@ -1,0 +1,12 @@
+from django.shortcuts import render_to_response, render
+from django.template import RequestContext
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
+
+
+def index(request):
+	return render(request, 'music_stream/index.html')
+
+# Create your views here.
