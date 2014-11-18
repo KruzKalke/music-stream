@@ -1,9 +1,32 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+<<<<<<< HEAD
 	<p>this is the body</p>
 	<p>Want to upload and download? <a href="{% url 'list' %}">Go Here</a>!</p>
 {% endblock %}
+=======
+    {% if musics %}
+        <ul>
+        {% for music in musics %}
+            <li><a href="{{ music.musicfile.url }}">{{ music.musicfile.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No documents.</p>
+    {% endif %}
+
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url "index" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            {% endfor %}
+            <p><input type="submit" value="Upload" /></p>
+ {% endblock %}
+>>>>>>> ad67456a39bd4339ee3cfd4df95f769a1c598ed5
 
 {% block side_block %}
 	<p>this is the side bar</p>
