@@ -16,13 +16,21 @@ def list(request):
 	if request.method == 'POST':
 		form = MusicForm(request.POST, request.FILES)
 		if form.is_valid():
-			handle_uploaded_file(request.FILES['file'])
-			# Redirect to the document list after POST
-			return HttpResponse("SUCCESS")
+			newmusic= Music(musicfile= request.FILES['musicfile'])
+			newmusic.save()
+		# Redirect to the document list after POST
+			#return HttpResponse("SUCCESS")
+			return HttpResponseRedirect(reverse('music_stream.views.list'))
 	else:
 		form = MusicForm() # A empty, unbound form
-		return render_to_response(
+
+		# Load documents for the list page
+	musics = Music.objects.all()
+		# Render list page with the documents and the form
+	return render_to_response(
 						'music_stream/list.html',
-						{'form': form}
+						{'musics': musics, 'form': form},
+						context_instance=RequestContext(request)
 						)
+
 # Create your views here.

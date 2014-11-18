@@ -7,9 +7,3 @@
 {% block side_block %}
 	<p>this is the side bar</p>
 {% endblock %}
-
-<form action="/" method="post">
-	{% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit" />
-</form>
