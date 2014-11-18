@@ -11,3 +11,5 @@ urlpatterns = patterns('',
 		url(r'^', include('music_stream.urls')),
 		(r'^accounts/', include('registration.backends.simple.urls')),
 )
+
+#test
