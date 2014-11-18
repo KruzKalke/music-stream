@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, redirect
 from django.template import RequestContext
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -30,7 +30,8 @@ def index(request):
 							context_instance=RequestContext(request)
 							)
 	else:
-		return render(request, 'registration/login.html')
+		# return render(request, 'registration/login.html')
+		return redirect('accounts/login', request)
 
 def list(request):
 	if request.user.is_authenticated():
