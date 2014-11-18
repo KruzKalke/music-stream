@@ -19,12 +19,13 @@
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "list" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
-            <p>{{ form.musicfile.label_tag }} {{ form.musicfile.help_text }}</p>
-            <p>
-                {{ form.musicfile.errors }}
-                {{ form.musicfile}}
-            </p>
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+            {% endfor %}
+
+            
             <p><input type="submit" value="Upload" /></p>
         </form>
     </body>
