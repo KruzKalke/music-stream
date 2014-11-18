@@ -9,5 +9,6 @@ from django.core.urlresolvers import reverse
 def index(request):
 	if request.user.is_authenticated():
 		return render(request, 'music_stream/index.html')
-
+	else:
+		return render(request, 'registration/login.html')
 # Create your views here.
