@@ -30,6 +30,7 @@ def index(request):
 							context_instance=RequestContext(request)
 							)
 	else:
+		# return render(request, 'registration/login.html')
 		return redirect('accounts/login', request)
 
 def list(request):
