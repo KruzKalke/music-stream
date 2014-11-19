@@ -1,0 +1,97 @@
+ch1
+s5
+s6
+s7(attributes/last one)
+s9
+s10(why engr)
+s11(process activities)
+s12
+s15-17 (app types)
+s24-allethics(know ethics)
+s30(most important)
+s32(understand case studies)
+
+ch2
+s4
+s5
+s6
+s7(know 5 stages)
+s8
+s9(problems)
+s10
+s11
+s12
+s16
+s17(4 stages)
+s18-23
+s25
+s26
+s27
+s31(know)
+s32
+s33
+s34
+s35
+s36
+s37
+s38
+s40
+s41
+
+
+ch3
+s3
+s4
+s6
+s7
+s8
+s9
+s10
+s11
+s15
+s16
+s18
+s19
+
+ch4
+s3
+s4
+s6
+s9
+s10
+s12
+s13
+s14
+s16
+s20-25
+s26
+s30
+s31
+s34
+s36
+s38
+s39
+s40
+s58
+s59
+
+ch6
+s4
+s6
+s7
+s8
+s11
+s12
+s14 (know 4+1)
+s18
+s19
+s22
+s23
+s25
+s26
+s28
+s29
+s33
+s34
+s35
+s36

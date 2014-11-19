@@ -16,6 +16,7 @@ TEMPLATE_DIRS = [
 	TEMPLATE_PATH,
 ]
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -89,6 +90,11 @@ LOGIN_URL ='/accounts/login/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+STATIC_PATH = os.path.join(BASE_DIR,'static')
+
+STATICFILES_DIRS = (
+    STATIC_PATH,
+)
 
 
 MEDIA_PATH = os.path.join(BASE_DIR, 'media')

@@ -1,0 +1,28 @@
+.song-list-div {
+	font-size: 17px;
+	color: #444444;
+}
+
+.song-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.song-name {
+	margin-left: 20px;
+}
+
+.hr {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 0;
+	border-top: 1px solid #eee;
+}
+
+.hr-clear {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 0;
+	border-top: 1px solid transparent;
+}
