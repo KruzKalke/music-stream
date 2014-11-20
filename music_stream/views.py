@@ -13,7 +13,7 @@ def index(request):
 		if request.method == 'POST':
 			form = MusicForm(request.POST, request.FILES)
 			if form.is_valid():
-				newmusic= Music(name=request.POST["name"], musicfile= request.FILES['musicfile'])
+				newmusic= Music(name=request.FILES['musicfile'].name, musicfile= request.FILES['musicfile'])
 				newmusic.save()
 			# Redirect to the document list after POST
 				#return HttpResponse("SUCCESS")

@@ -1,27 +1,59 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+  
+</button>
+	<h3>Music Library</h3>
     {% if musics %}
-        <ul>
-        {% for music in musics %}
-            <li><a href="{{ music.musicfile.url }}">{{ music.musicfile.name }}</a></li>
-        {% endfor %}
-        </ul>
+		<div class="song-list-div">
+			<div class="col-xs-5">
+				<ul class="song-list">
+				{% for music in musics %}
+					<li>
+						<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span><span class="song-name">{{ music.name }}</span>
+						<div class="hr"></div>
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+			<div class="col-xs-1">
+				<ul class="song-list">
+				{% for music in musics %}
+					<li>
+						<a href="{{ music.musicfile.url }}"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
+						<div class="hr-clear"></div>
+
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</div>
     {% else %}
-        <p>No documents.</p>
+        <p>:( Your library is empty! Get started by uploading a song below.</p>
     {% endif %}
 
+    <div style="clear:both;margin-bottom:100px;"></div>
+    	<h3>Add Songs</h3>
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "index" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {% for field in form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}
-            {% endfor %}
-            <p><input type="submit" value="Upload" /></p>
+           <input style="width:30%;margin-bottom:20px;"  id="id_musicfile" name="musicfile" type="file" />
+           <input style="width:30%;" class="btn btn-default btn-md" type="submit" value="Upload" />
+
+
+
+
  {% endblock %}
 
 {% block side_block %}
 	<p>this is the side bar</p>
 {% endblock %}
+
+<div>
+	<div class="col-xs-3">
+		<p>hello</p>
+	</div>
+	<div class="col-xs-3">
+		<p>hello</p>
+	</div>
+</div>

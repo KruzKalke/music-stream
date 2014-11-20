@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = patterns('',
     # Examples:
@@ -11,5 +12,8 @@ urlpatterns = patterns('',
 		url(r'^', include('music_stream.urls')),
 		(r'^accounts/', include('registration.backends.simple.urls')),
 )
+
+if not settings.DEBUG:
+        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 #test
