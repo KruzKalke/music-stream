@@ -3,20 +3,28 @@
 {% block body_block %}
   
 </button>
-	<h3>Music Library</h3>
+
+
+
+
+<audio preload></audio>
+	<h3 style="color:black;font-size:16px;">Music</h3>
     {% if musics %}
+
+    
 		<div class="song-list-div">
 			<div class="col-xs-5">
-				<ul class="song-list">
+				<ol class="song-list">
 				{% for music in musics %}
-					<li>
-						<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span><span class="song-name">{{ music.name }}</span>
-						<div class="hr"></div>
+					<li class="song-list-entry">
+						<a href="#" data-src="{{ music.musicfile.url }}" class="song-name">{{ music.name }}</a>
 					</li>
 				{% endfor %}
-				</ul>
+				</ol>
 			</div>
-			<div class="col-xs-1">
+
+
+<!-- 			<div class="col-xs-1">
 				<ul class="song-list">
 				{% for music in musics %}
 					<li>
@@ -26,14 +34,14 @@
 					</li>
 				{% endfor %}
 				</ul>
-			</div>
+			</div> -->
 		</div>
     {% else %}
         <p>:( Your library is empty! Get started by uploading a song below.</p>
     {% endif %}
 
     <div style="clear:both;margin-bottom:100px;"></div>
-    	<h3>Add Songs</h3>
+    	<h3 style="color:black;font-size:16px;">Add Songs</h3>
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "index" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
