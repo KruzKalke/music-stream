@@ -4,58 +4,36 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
-from music_stream.models import  Music 
-from music_stream.forms import MusicForm
+from music_stream.models import  Song
+from music_stream.forms import SongForm
 
 
 def index(request):
 	if request.user.is_authenticated():
 		if request.method == 'POST':
-			form = MusicForm(request.POST, request.FILES)
+			form = SongForm(request.POST, request.FILES)
 			if form.is_valid():
-				newmusic= Music(name=request.FILES['musicfile'].name, musicfile= request.FILES['musicfile'])
-				newmusic.save()
+				newsong= Song(file_name=request.FILES['songfile'].name, songfile= request.FILES['songfile'])
+				newsong.save()
+				newsong.update()
 			# Redirect to the document list after POST
 				#return HttpResponse("SUCCESS")
 				return HttpResponseRedirect(reverse('music_stream.views.index'))
 		else:
-			form = MusicForm() # A empty, unbound forms
+			form = SongForm() # A empty, unbound forms
 
 			# Load documents for the list page
-		musics = Music.objects.all()
+		songList = Song.objects.all()
 			# Render list page with the documents and the form
 		return render_to_response(
 							'music_stream/index.html',
-							{'musics': musics, 'form': form},
+							{'songList': songList, 'form': form},
 							context_instance=RequestContext(request)
 							)
 	else:
 		# return render(request, 'registration/login.html')
 		return redirect('accounts/login', request)
 
-def list(request):
-	if request.user.is_authenticated():
-	     # Handle file upload
-		if request.method == 'POST':
-			form = MusicForm(request.POST, request.FILES)
-			if form.is_valid():
-				newmusic= Music(name=request.POST["name"], musicfile= request.FILES['musicfile'])
-				newmusic.save()
-			# Redirect to the document list after POST
-				#return HttpResponse("SUCCESS")
-				return HttpResponseRedirect(reverse('music_stream.views.list'))
-		else:
-			form = MusicForm() # A empty, unbound forms
 
-			# Load documents for the list page
-		musics = Music.objects.all()
-			# Render list page with the documents and the form
-		return render_to_response(
-							'music_stream/list.html',
-							{'musics': musics, 'form': form},
-							context_instance=RequestContext(request)
-							)
-	else:
-		return render(request, 'registration/login.html')
 
 # Create your views here.

@@ -9,15 +9,15 @@
 
 <audio preload></audio>
 	<h3 style="color:black;font-size:16px;">Music</h3>
-    {% if musics %}
+    {% if songList %}
 
     
 		<div class="song-list-div">
 			<div class="col-xs-5">
 				<ol class="song-list">
-				{% for music in musics %}
+				{% for song in songList %}
 					<li class="song-list-entry">
-						<a href="#" data-src="{{ music.musicfile.url }}" class="song-name">{{ music.name }}</a>
+						<a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.file_name }}</a>
 					</li>
 				{% endfor %}
 				</ol>
@@ -45,8 +45,9 @@
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "index" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-           <input style="width:30%;margin-bottom:20px;"  id="id_musicfile" name="musicfile" type="file" />
+           <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" />
            <input style="width:30%;" class="btn btn-default btn-md" type="submit" value="Upload" />
+
 
 
 
