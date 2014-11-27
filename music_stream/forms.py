@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from django import forms 
-from music_stream.models import Music
+from music_stream.models import Song
 
-class MusicForm(forms.ModelForm):
-	musicfile = forms.FileField(
+class SongForm(forms.ModelForm):
+	songfile = forms.FileField(
 		label = 'Select a file'	
 	)
 
 	class Meta:
-		model = Music
-		fields=('musicfile',)
-		exclude=('name',)
+		model = Song
+		fields=('songfile',)
+		exclude=('file_name','title','artist','track_num')
 
