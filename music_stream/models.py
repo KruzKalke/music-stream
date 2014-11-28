@@ -6,6 +6,7 @@ from mutagen.id3 import ID3, TIT2, TPE1, COMM, TIME
 
 
 class Song(models.Model):
+	owner = models.CharField(max_length=30,default=None)
 	file_name = models.CharField(max_length=128,unique=True)
 	songfile = models.FileField(upload_to='music/%Y/%m/%d')
 	title = models.CharField(max_length=128,default='untitled')

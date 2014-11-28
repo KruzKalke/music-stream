@@ -23,7 +23,7 @@ def index(request):
 
 			form = SongForm(request.POST, request.FILES)
 			if form.is_valid():
-				newsong= Song(file_name=request.FILES['songfile'].name, songfile= request.FILES['songfile'])
+				newsong = Song(owner=request.user.username, file_name=request.FILES['songfile'].name, songfile=request.FILES['songfile'])
 				newsong.save()
 				newsong.update()
 			# Redirect to the document list after POST
@@ -33,7 +33,7 @@ def index(request):
 			form = SongForm() # A empty, unbound forms
 
 			# Load documents for the list page
-		songList = Song.objects.all()
+		songList = Song.objects.filter(owner=request.user.username)
 			# Render list page with the documents and the form
 		return render_to_response(
 							'music_stream/index.html',
