@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
+admin.autodiscover()
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'muse.views.home', name='home'),
