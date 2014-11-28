@@ -9,8 +9,18 @@ from music_stream.forms import SongForm
 
 
 def index(request):
+    context_dict = {}
+    context_dict['result_list'] = None
+    context_dict['query'] = None
+
 	if request.user.is_authenticated():
 		if request.method == 'POST':
+			query = request.POST['query'].strip()
+			if query:
+				result_list = Song.objects.filter(artist=query)
+				context_dict['result_list'] = result_list 
+				
+
 			form = SongForm(request.POST, request.FILES)
 			if form.is_valid():
 				newsong= Song(file_name=request.FILES['songfile'].name, songfile= request.FILES['songfile'])
