@@ -2,11 +2,11 @@
 
 {% block body_block %}
 
-<form class="form-inline" id="user_form" method="post" action="{% url "index" %}">
+<form class="form-inline" id="user_form" method="post" action="{% url "search" %}">
      {% csrf_token %}
      <!-- Display the search form elements here -->
      <input class="form-control" type="text" size="50" name="query" value="{{query}}" id="query" />
-     <input class="btn btn-primary" type="submit" name="submit" value="Search" />
+     <input class="btn btn-primary" type="submit" name="search_submit" value="Search" />
 </form>
 
 
@@ -49,7 +49,7 @@
         <form action="{% url "index" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
            <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" />
-           <input style="width:30%;" class="btn btn-default btn-md" type="submit" value="Upload" />
+           <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="upload_submit" value="Upload" />
 
 
 
