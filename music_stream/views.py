@@ -20,7 +20,7 @@ def index(request):
 					newsong.update()
 				# Redirect to the document list after POST
 					#return HttpResponse("SUCCESS")
-					return HttpResponseRefdirect(reverse('music_stream.views.index'))
+					return HttpResponseRedirect(reverse('music_stream.views.index'))
 		else:
 			form = SongForm() # A empty, unbound forms
 
