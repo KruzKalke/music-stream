@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models import Model
 from django.template.defaultfilters import slugify
-from django.core.files.storage import FileSystemStorage
 from os.path import splitext
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, TIT2, TPE1, COMM
+from mutagen.id3 import ID3, TIT2, TPE1, COMM, TALB
+from django.core.files.storage import FileSystemStorage
 import hashlib
 
 class CustomStorage(FileSystemStorage):
@@ -34,7 +34,7 @@ class Song(models.Model):
 	owner = models.CharField(max_length=30,default=None)
 	file_name = models.CharField(max_length=128)
 	songfile = models.FileField(upload_to='music/%Y/%m/%d',storage=CustomStorage())
-	md5sum = models.CharField(max_length=36)
+	md5sum = models.CharField(max_length=36,default=None)
 	title = models.CharField(max_length=128,default='untitled')
 	artist = models.CharField(max_length=128,default='unknown')
 	album = models.CharField(max_length=128,default='unknown')
