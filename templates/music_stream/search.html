@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+
+    
+        <h3>Search results for:  {{query}}</h3>
+        {% if artists %}
+            <h4>Artists</h4>
+                {% for artist in artists %}
+                    <p><a href="/artist/{{ artist.artist_slug }}">{{ artist.artist }}</a></p>
+                {% endfor %}
+        {% endif %}
+        {% if albums %}
+            <h4>Albums</h4>
+                {% for album in albums %}
+                    <p><a href="/album/{{ album.album_slug }}">{{ album.album }}</a></p>
+                {% endfor %}
+        {% endif %}
+        {% if songs %}
+            <h4>Songs</h4>
+                {% for song in songs %}
+                    <p>{{ song.title }}</a></p>
+                {% endfor %}
+        {% endif %}
+
+    
+
+{% endblock %}
