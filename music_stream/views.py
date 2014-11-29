@@ -49,11 +49,9 @@ def search(request):
 				if query:
 					artists = Song.objects.filter(owner=request.user.username).filter(artist__icontains=query).order_by().values('artist','artist_slug').distinct()
 					# search for albums matching the query or albums from the artist matching the query
-					albums = Song.objects.filter(owner=request.user.username).filter(album__icontains=query).order_by().values('album','album_slug').distinct()
-					albums = Song.objects.filter(owner=request.user.username).filter(artist__icontains=query).order_by().values('album','album_slug').distinct()
+					albums = Song.objects.filter(owner=request.user.username).filter(Q(album__icontains=query) | Q(artist__icontains=query)).order_by().values('album','album_slug').distinct()
 
-					
-					#songs = Song.objects.filter(owner=request.user.username).filter(title__icontains=query)
+
 					songs = Song.objects.filter(owner=request.user.username).filter(Q(title__icontains=query) | Q(artist__icontains=query) | Q(album__icontains=query))
 					context_dict['query'] = query
 					context_dict['artists'] = artists
