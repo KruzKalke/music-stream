@@ -9,7 +9,7 @@ import hashlib
 class CustomStorage(FileSystemStorage):
 	def get_available_name(self, file_name):
 		return file_name
-		
+
 	def _save(self, file_name, content):
 		if self.exists(file_name):
 			#if the file exists, do not save the new file
@@ -60,3 +60,11 @@ class Song(models.Model):
 		tmp = str(tmp).split("/",1)
 		self.track_num = tmp[0]
 		super(Song,self).save()
+
+class Playlist(models.Model):
+	owner = models.CharField(max_length=30,default=None)
+	title = models.CharField(max_length=128,default='untitled')
+	songs = models.ManyToManyField(Song)
+
+	def __unicode__(self):
+		return self.title
