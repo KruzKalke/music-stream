@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="">
+
+    <title>Muse</title> 
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}"
+          rel="stylesheet" media="screen">
+
+    <!-- Custom styles for this template -->
+    <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+    <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
+		
+		<!--Sortable  -->
+		
+		<script src="{% static 'bootstrap/js/sortable.min.js' %}"> </script>
+		<link rel="stylesheet" href= "{% static 'bootstrap/css/sortable-theme-bootstrap.css' %}" >
+		
+
+<!--
+
+<script>
+     $(function() { 
+       // Setup the player to autoplay the next track
+       var a = audiojs.createAll({
+         trackEnded: function() {
+           var next = $('td tr.playing').next();
+           if (!next.length) next = $('td tr').first();
+           next.addClass('playing').siblings().removeClass('playing');
+           audio.load($('a', next).attr('data-src'));
+           audio.play();
+         }
+       });
+       
+       // Load in the first track
+       var audio = a[0];
+           first = $('td a').attr('data-src');
+       $('td tr').first().addClass('playing');
+       audio.load(first);
+
+       // Load in a track on click
+       $('td tr').click(function(e) {
+         e.preventDefault();
+         $(this).addClass('playing').siblings().removeClass('playing');
+         audio.load($('a', this).attr('data-src'));
+         audio.play();
+       });
+       // Keyboard shortcuts
+       $(document).keydown(function(e) {
+         var unicode = e.charCode ? e.charCode : e.keyCode;
+            // right arrow
+         if (unicode == 39) {
+           var next = $('tr.playing').next();
+           if (!next.length) next = $('td tr').first();
+           next.click();
+           // back arrow
+         } else if (unicode == 37) {
+           var prev = $('tr.playing').prev();
+           if (!prev.length) prev = $('td tr').last();
+           prev.click();
+           // spacebar
+         // } else if (unicode == 32) {
+         //   audio.playPause();
+         }
+       })
+     });
+   </script>
+
+-->
+
+
+
+
+		<!-- audio.js -->
+    <script src="{% static 'audiojs/audio.min.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script>
+     $(function() { 
+       // Setup the player to autoplay the next track
+       var a = audiojs.createAll({
+         trackEnded: function() {
+           var cellIndex = $('.song.playing').index();  
+           var next = $('.song.playing').parent().closest('tr').next().children().eq(cellIndex);
+           if (!next.length) next = $('.song').first();
+           next.addClass('playing').siblings().removeClass('playing');
+           audio.load($('a', next).attr('data-src'));
+           audio.play();
+         }
+       });
+       
+       // Load in the first track
+       var audio = a[0];
+           first = $('.song a').attr('data-src');
+       $('.song').first().addClass('playing');
+       audio.load(first);
+
+       // Load in a track on click
+       $('.song').click(function(e) {
+         $prev = $('.song.playing');
+         $prev.removeClass('playing');
+         e.preventDefault();
+         $(this).addClass('playing');
+         audio.load($('a', this).attr('data-src'));
+         audio.play();
+       });
+       // Keyboard shortcuts
+       //$(document).keydown(function(e) {
+        // var unicode = e.charCode ? e.charCode : e.keyCode;
+            // right arrow
+        // if (unicode == 39) {
+          // var next = $('li.playing').next();
+         //  if (!next.length) next = $('ol li').first();
+        //   next.click();
+           // back arrow
+        // } else if (unicode == 37) {
+         //  var prev = $('li.playing').prev();
+          // if (!prev.length) prev = $('ol li').last();
+          // prev.click();
+           // spacebar
+         // } else if (unicode == 32) {
+         //   audio.playPause();
+        // }
+       //})
+     });
+   </script>
+    <!-- Custom CSS 
+                   Placed here to override Bootstrap-->
+    <link href="{% static 'css/home.css' %}"
+          rel="stylesheet" media="screen">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Muse</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'auth_login' %}">Logout</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          {% block side_block %}{% endblock %}
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div>
+            {% block body_block %}{% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/docs.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
