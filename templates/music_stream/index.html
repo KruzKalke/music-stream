@@ -21,18 +21,20 @@
 				<table class="table table-hover" data-sortable >
 					<thead>
 					
-								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </td>
-								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </td>
-								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> ARTIST </td>
+								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>
+								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </th>
+								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> ARTIST </th>
 						
 					</thead>
-
+					
+					<tbody>
 					{% for song in songList %}	
 					<tr>
 								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
 								<td class = "song">   {{song.album}}</td>
 								<td class = "song"> {{song.artist}}</td>
 					</tr>
+					</tbody>
 					{% endfor %}
 				</table>    
 			</div>
