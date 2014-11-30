@@ -10,11 +10,35 @@
 </form>
 
 
-<audio preload></audio>
-	<h3 style="color:black;font-size:16px;">Music</h3>
-    {% if songList %}
 
-    
+</br>
+</br>
+<audio preload></audio>
+
+
+{% if songList %}
+			<div class="table-responsive">
+				<table class="table table-hover" data-sortable >
+					<thead>
+					
+								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </td>
+								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </td>
+								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> ARTIST </td>
+						
+					</thead>
+
+					{% for song in songList %}	
+					<tr>
+								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
+								<td class = "song">   {{song.album}}</td>
+								<td class = "song"> {{song.artist}}</td>
+					</tr>
+					{% endfor %}
+				</table>    
+			</div>
+
+<!--
+
 		<div class="song-list-div">
 			<div class="col-xs-5">
 				<ol class="song-list">
@@ -25,7 +49,7 @@
 				{% endfor %}
 				</ol>
 			</div>
-
+-->
 
 <!-- 			<div class="col-xs-1">
 				<ul class="song-list">
