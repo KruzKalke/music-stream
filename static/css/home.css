@@ -73,4 +73,10 @@ background-image: -moz-linear-gradient(center top, #222 0%, #333 50%, #222 51%, 
 	text-transform: capitalize;
 }
 
+#contextMenu {
+	position: absolute;
+	display: none;
+}
+
+
 

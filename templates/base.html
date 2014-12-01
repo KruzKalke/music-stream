@@ -26,6 +26,17 @@
 		<script src="{% static 'bootstrap/js/sortable.min.js' %}"> </script>
 		<link rel="stylesheet" href= "{% static 'bootstrap/css/sortable-theme-bootstrap.css' %}" >
 		
+<!--
+var $contextMenu = $("#contextMenu");
+
+$("#myTable").contextMenu({
+    menuSelector: "#contextMenu",
+    menuSelected: function (invokedOn, selectedMenu) {
+        // context menu clicked
+    }
+});
+
+-->
 
 <!--
 
@@ -114,24 +125,28 @@
          audio.play();
        });
        // Keyboard shortcuts
-       //$(document).keydown(function(e) {
-        // var unicode = e.charCode ? e.charCode : e.keyCode;
+       $(document).keydown(function(e) {
+        	var unicode = e.charCode ? e.charCode : e.keyCode;
             // right arrow
-        // if (unicode == 39) {
-          // var next = $('li.playing').next();
-         //  if (!next.length) next = $('ol li').first();
-        //   next.click();
+        	 if (unicode == 39){ 
+          	 var next = $('.song.playing').next();
+           if (!next.length) next = $('.song').first();
+           next.click();
+					}
            // back arrow
-        // } else if (unicode == 37) {
-         //  var prev = $('li.playing').prev();
-          // if (!prev.length) prev = $('ol li').last();
-          // prev.click();
+         		else if (unicode == 37) {
+          		var prev = $('.song.playing').prev();
+          	 	if (!prev.length) prev = $('.song').last();
+          	 	prev.click();
            // spacebar
-         // } else if (unicode == 32) {
-         //   audio.playPause();
-        // }
-       //})
-     });
+          //} else if (unicode == 32) {
+           // audio.playPause();
+         //}
+       			}
+			})
+
+    
+		 });
    </script>
     <!-- Custom CSS 
                    Placed here to override Bootstrap-->
