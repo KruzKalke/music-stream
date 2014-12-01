@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, render, redirect
+from django.shortcuts import render_to_response, render, redirect, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -8,8 +8,22 @@ from django.db.models import Q
 from music_stream.models import  Song
 from music_stream.forms import SongForm
 
+import os
+import urllib
+
+from google.appengine.ext import blobstore
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.ext.webapp import template
+from google.appengine.ext.webapp.util import run_wsgi_app
+
+from filetransfers.api import prepare_upload
+from filetransfers.api import serve_file
+
 
 def index(request):
+	upload_url = blobstore.create_upload_url('/')
+	view_url = reverse('music_stream.views.index')
 	if request.user.is_authenticated():
 		if request.method == 'POST':
 			if 'upload_submit' in request.POST:
@@ -20,16 +34,17 @@ def index(request):
 					newsong.update()
 				# Redirect to the document list after POST
 					#return HttpResponse("SUCCESS")
-					return HttpResponseRedirect(reverse('music_stream.views.index'))
+					return HttpResponseRedirect(view_url)
 		else:
 			form = SongForm() # A empty, unbound forms
 
 			# Load documents for the list page
 		songList = Song.objects.filter(owner=request.user.username)
+		upload_url, upload_data = prepare_upload(request, view_url)
 			# Render list page with the documents and the form
 		return render_to_response(
 							'music_stream/index.html',
-							{'songList': songList, 'form': form},
+							{'songList': songList, 'form': form, 'upload_url': upload_url, 'upload_data': upload_data},
 							context_instance=RequestContext(request)
 							)
 	else:
@@ -85,7 +100,21 @@ def artist(request,artist_name_slug):
 
 	return render(request, 'music_stream/artist.html',context_dict)
 
+def serve(request, pk):
+	upFile = get_object_or_404(Song, pk=pk)
+	return serve_file(request, upFile.songfile, save_as=True)
 
+def purge(request):
+	songList = Song.objects.filter(owner=request.user.username)
+	for song in songList:
+		blobstore.delete(song.songfile.file.blobstore_info.key())
+		song.delete()
+	return redirect('/')
 
-
+def purgeall(request):
+	songList = Song.objects.all()
+	songList.delete()
+	for b in blobstore.BlobInfo.all():
+		blobstore.delete(b.key())
+	return redirect('/')
 # Create your views here.

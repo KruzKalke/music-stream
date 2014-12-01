@@ -5,21 +5,28 @@ from os.path import splitext
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, TIT2, TPE1, COMM, TALB
 from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import default_storage as storage
 from os.path import splitext
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, TIT2, TPE1, COMM
+
+from google.appengine.ext import blobstore
+from google.appengine.api import images
+
+from filetransfers.api import serve_file
+
 import hashlib
 
-class CustomStorage(FileSystemStorage):
-	def get_available_name(self, file_name):
-		return file_name
+# class CustomStorage(FileSystemStorage):
+# 	def get_available_name(self, file_name):
+# 		return file_name
 		
-	def _save(self, file_name, content):
-		if self.exists(file_name):
-			#if the file exists, do not save the new file
-			return file_name
-		#if the file does not exist, save the file
-		return super(CustomStorage, self)._save(file_name, content)		
+# 	def _save(self, file_name, content):
+# 		if self.exists(file_name):
+# 			#if the file exists, do not save the new file
+# 			return file_name
+# 		#if the file does not exist, save the file
+# 		return super(CustomStorage, self)._save(file_name, content)		
 
 class Music(models.Model):
 	name = models.CharField(max_length=128,unique=True)
@@ -37,7 +44,7 @@ class Music(models.Model):
 class Song(models.Model):
 	owner = models.CharField(max_length=30,default=None)
 	file_name = models.CharField(max_length=128)
-	songfile = models.FileField(upload_to='music/%Y/%m/%d',storage=CustomStorage())
+	songfile = models.FileField(upload_to='music/%Y/%m/%d')
 	md5sum = models.CharField(max_length=36,default=None)
 	title = models.CharField(max_length=128,default='untitled')
 	artist = models.CharField(max_length=128,default='unknown')
@@ -61,8 +68,14 @@ class Song(models.Model):
 		super(Song,self).save(*args, **kwargs)
 
 	def update(self):
-		audiofile = ID3(self.songfile.path)
-		mp3file = MP3(self.songfile.path)
+		#s= serve_file(self, self.songfile, save_as=True)
+		#s= "/serve/"+ str(self.pk)
+		s=self.songfile.file.blobstore_info
+		# s= blobstore.BlobInfo.get(r)
+		# s= self.songfile.file.blobstore_info
+		# s = images.get_serving_url(r)
+		audiofile = ID3(s)
+		mp3file = MP3(s)
 		self.title = audiofile["TIT2"]
 		self.artist = audiofile["TPE1"]
 		self.album = audiofile["TALB"]
@@ -74,4 +87,5 @@ class Song(models.Model):
 		tmp = audiofile["TRCK"]
 		tmp = str(tmp).split("/",1)
 		self.track_num = tmp[0]
+		
 		super(Song,self).save()

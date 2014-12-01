@@ -26,10 +26,11 @@
 								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> ARTIST </th>
 						
 					</thead>
-
-					{% for song in songList %}	
+					{% load filetransfers %}
+					{% for song in songList %}
+					{% url "music_stream.views.serve" pk=song.pk as fallback_url %}	
 					<tr>
-								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
+								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
 								<td>   {{song.album}}</td>
 								<td> {{song.artist}}</td>
 					</tr>
@@ -37,31 +38,7 @@
 				</table>    
 			</div>
 
-<!--
 
-		<div class="song-list-div">
-			<div class="col-xs-5">
-				<ol class="song-list">
-				{% for song in songList %}
-					<li class="song-list-entry">
-						<a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.file_name }}</a>
-					</li>
-				{% endfor %}
-				</ol>
-			</div>
--->
-
-<!-- 			<div class="col-xs-1">
-				<ul class="song-list">
-				{% for music in musics %}
-					<li>
-						<a href="{{ music.musicfile.url }}"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-						<div class="hr-clear"></div>
-
-					</li>
-				{% endfor %}
-				</ul>
-			</div> -->
 		</div>
     {% else %}
         <p>:( Your library is empty! Get started by uploading a song below.</p>
@@ -70,11 +47,15 @@
     <div style="clear:both;margin-bottom:100px;"></div>
     	<h3 style="color:black;font-size:16px;">Add Songs</h3>
         <!-- Upload form. Note enctype attribute! -->
-        <form action="{% url "index" %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-           <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" />
-           <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="upload_submit" value="Upload" />
+        {% load filetransfers %}
+        <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
 
+            {% csrf_token %}
+            {% render_upload_data upload_data %}
+            <table>{{ form }}</table>
+           <!-- <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" /> -->
+           <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="upload_submit" value="Upload" />
+        </form>
 
 
 
