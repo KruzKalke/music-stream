@@ -20,60 +20,69 @@
     <!-- Custom styles for this template -->
     <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
     <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- audio.js -->
+		
+		<!--Sortable  -->
+		
+		<script src="{% static 'bootstrap/js/sortable.min.js' %}"> </script>
+		<link rel="stylesheet" href= "{% static 'bootstrap/css/sortable-theme-bootstrap.css' %}" >
+		
+		<!-- audio.js -->
     <script src="{% static 'audiojs/audio.min.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script>
-      $(function() { 
-        // Setup the player to autoplay the next track
-        var a = audiojs.createAll({
-          trackEnded: function() {
-            var next = $('ol li.playing').next();
-            if (!next.length) next = $('ol li').first();
-            next.addClass('playing').siblings().removeClass('playing');
-            audio.load($('a', next).attr('data-src'));
-            audio.play();
-          }
-        });
-        
-        // Load in the first track
-        var audio = a[0];
-            first = $('ol a').attr('data-src');
-        $('ol li').first().addClass('playing');
-        audio.load(first);
+		<script>
+     $(function() { 
+       // Setup the player to autoplay the next track
+       var a = audiojs.createAll({
+         trackEnded: function() {
+           var cellIndex = $('.song.playing').index();  
+           var next = $('.song.playing').parent().closest('tr').next().children().eq(cellIndex);
+           if (!next.length) next = $('.song').first();
+           next.addClass('playing').siblings().removeClass('playing');
+           audio.load($('a', next).attr('data-src'));
+           audio.play();
+         }
+       });
+       
+       // Load in the first track
+       var audio = a[0];
+           first = $('.song a').attr('data-src');
+       $('.song').first().addClass('playing');
+       audio.load(first);
 
-        // Load in a track on click
-        $('ol li').click(function(e) {
-          e.preventDefault();
-          $(this).addClass('playing').siblings().removeClass('playing');
-          audio.load($('a', this).attr('data-src'));
-          audio.play();
-        });
-        // Keyboard shortcuts
-        $(document).keydown(function(e) {
-          var unicode = e.charCode ? e.charCode : e.keyCode;
-             // right arrow
-          if (unicode == 39) {
-            var next = $('li.playing').next();
-            if (!next.length) next = $('ol li').first();
-            next.click();
-            // back arrow
-          } else if (unicode == 37) {
-            var prev = $('li.playing').prev();
-            if (!prev.length) prev = $('ol li').last();
-            prev.click();
-            // spacebar
-          // } else if (unicode == 32) {
-          //   audio.playPause();
-          }
-        })
-      });
+       // Load in a track on click
+       $('.song').click(function(e) {
+         $prev = $('.song.playing');
+         $prev.removeClass('playing');
+         e.preventDefault();
+         $(this).addClass('playing');
+         audio.load($('a', this).attr('data-src'));
+         audio.play();
+       });
+       // Keyboard shortcuts
+       $(document).keydown(function(e) {
+        	var unicode = e.charCode ? e.charCode : e.keyCode;
+            // right arrow
+        	 if (unicode == 39){ 
+          	 var next = $('.song.playing').next();
+           if (!next.length) next = $('.song').first();
+           next.click();
+					}
+           // back arrow
+         		else if (unicode == 37) {
+          		var prev = $('.song.playing').prev();
+          	 	if (!prev.length) prev = $('.song').last();
+          	 	prev.click();
+           // spacebar
+          //} else if (unicode == 32) {
+           // audio.playPause();
+         //}
+       			}
+			})
 
-
-    </script>
-
-    <!-- Custom CSS 
+    
+		 });
+   </script>
+   <!-- Custom CSS 
                    Placed here to override Bootstrap-->
     <link href="{% static 'css/home.css' %}"
           rel="stylesheet" media="screen">
@@ -106,21 +115,99 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
+        <div id="sidebar" class="col-sm-3 col-md-2 sidebar">
           {% block side_block %}{% endblock %}
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <div>
-            {% block body_block %}{% endblock %}
+					          {% block body_block %}{% endblock %}
           </div>
+
+		<script>
+							(function ($, window) {
+									$.fn.contextMenu = function (settings) {
+											return this.each(function () {
+													// Open context menu
+													$(this).on("contextmenu", function (e) {
+															//open menu
+															$(settings.menuSelector)
+																	.data("invokedOn", $(e.target))
+																	.show()
+																	.css({
+																			position: "absolute",
+																			left: getLeftLocation(e),
+																			top: getTopLocation(e)
+																	})
+																	.off('click')
+																	.on('click', function (e) {
+																			$(this).hide();
+															
+																			var $invokedOn = $(this).data("invokedOn");
+																			var $selectedMenu = $(e.target);
+																			
+																			settings.menuSelected.call(this, $invokedOn, $selectedMenu);
+															});
+															
+															return false;
+													});
+
+													//make sure menu closes on any click
+													$(document).click(function () {
+															$(settings.menuSelector).hide();
+													});
+											});
+
+											function getLeftLocation(e) {
+												
+													var mouseWidth = e.pageX- document.getElementById("sidebar").offsetWidth;
+													var pageWidth = $(window).width();
+													var menuWidth = $(settings.menuSelector).width();
+													
+													// opening menu would pass the side of the page
+													if (mouseWidth + menuWidth > pageWidth &&
+															menuWidth < mouseWidth) {
+															return mouseWidth - menuWidth;
+													} 
+													return mouseWidth;
+											}        
+											
+											function getTopLocation(e) {
+													var mouseHeight = e.pageY - document.getElementById("navbar").offsetHeight; //- parentOffset.top;
+													var pageHeight = $(window).height();
+													var menuHeight = $(settings.menuSelector).height();
+
+													// opening menu would pass the bottom of the page
+													if (mouseHeight + menuHeight > pageHeight &&
+															menuHeight < mouseHeight) {
+															return mouseHeight - menuHeight;
+													} 
+													return mouseHeight;
+											}
+									};
+							})(jQuery, window);
+
+							$("#myTable .song").contextMenu({
+									menuSelector: "#contextMenu",
+									menuSelected: function (invokedOn, selectedMenu) {
+											var msg = "You selected the menu item '" + selectedMenu.text() +
+													"' on the value '" + invokedOn.title() + "'";
+											
+											alert(msg);
+									}
+							});
+						</script>
         </div>
       </div>
     </div>
 
+
+
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    
+    <!-- Placed at the end of the document so the pages load faster -->    
+
+
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/docs.min.js' %}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
