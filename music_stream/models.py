@@ -13,8 +13,6 @@ from mutagen.id3 import ID3, TIT2, TPE1, COMM
 from google.appengine.ext import blobstore
 from google.appengine.api import images
 
-from filetransfers.api import serve_file
-
 import hashlib
 
 # class CustomStorage(FileSystemStorage):
@@ -28,21 +26,9 @@ import hashlib
 # 		#if the file does not exist, save the file
 # 		return super(CustomStorage, self)._save(file_name, content)		
 
-class Music(models.Model):
-	name = models.CharField(max_length=128,unique=True)
-	blue = 'hello'
-	musicfile = models.FileField(upload_to='music/%Y/%m/%d')
-
-	def __unicode__(self):
-		return self.name
-
-	def save(self, *args, **kwargs):
-		self.name = splitext(self.name)[0]
-		super(Music,self).save(*args, **kwargs)
-
-
 class Song(models.Model):
 	owner = models.CharField(max_length=30,default=None)
+	shared = []
 	file_name = models.CharField(max_length=128)
 	songfile = models.FileField(upload_to='music/%Y/%m/%d')
 	md5sum = models.CharField(max_length=36,default=None)
@@ -53,6 +39,7 @@ class Song(models.Model):
 	length = models.PositiveSmallIntegerField(default=0)
 	artist_slug = models.SlugField(max_length=128,default='unknown')
 	album_slug = models.SlugField(max_length=128,default='unknown')
+	title_slug = models.SlugField(max_length=128,default='unknown')
 
 
 	def __unicode__(self):
@@ -76,16 +63,33 @@ class Song(models.Model):
 		# s = images.get_serving_url(r)
 		audiofile = ID3(s)
 		mp3file = MP3(s)
-		self.title = audiofile["TIT2"]
-		self.artist = audiofile["TPE1"]
-		self.album = audiofile["TALB"]
+		if "TIT2" in audiofile:
+			self.title = str(audiofile["TIT2"])
+		else:
+			self.title = self.file_name
+		if "TPE1" in audiofile:
+			self.artist = str(audiofile["TPE1"])
+		else:
+			self.artist = 'Unknown'
+		if "TALB" in audiofile:
+			self.album = str(audiofile["TALB"])
+		else:
+			self.album = 'Unknown'
 		self.artist_slug = slugify(self.artist)
 		self.album_slug = slugify(self.album)
+		self.title_slug = slugify(self.title)
 		tmp = mp3file.info.length
 		tmp = str(tmp).split(".",1)
 		self.length = tmp[0]
-		tmp = audiofile["TRCK"]
+		if "TRCK" in audiofile:
+			tmp = audiofile["TRCK"]
+		else:
+			tmp = 1
 		tmp = str(tmp).split("/",1)
 		self.track_num = tmp[0]
 		
 		super(Song,self).save()
+
+class Result(models.Model):
+	item = models.CharField(max_length=128,default='unknown')
+	item_slug= models.SlugField(max_length=128,default='unknown')

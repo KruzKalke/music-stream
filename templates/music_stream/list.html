@@ -1,40 +1,33 @@
+<!DOCTYPE html>
 {% extends "base.html" %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Blobstore Total Access</title>  
 
-{% block body_block %}
 
+      
+    </head>
+    <body>
+        {% block body_block %}
+    <!-- List of uploaded documents -->
+    <audio preload></audio>
+    {% if songList %}
 
-    
-        <h3>Search results for:  {{query}}</h3>
-        {% if artists %}
-            <h4>Artists</h4>
-                {% for artist in artists %}
-                    <p><a href="/artist/{{ artist.item_slug }}">{{ artist.item }}</a></p>
-                {% endfor %}
-        {% endif %}
-        {% if albums %}
-            <h4>Albums</h4>
-                {% for album in albums %}
-                    <p><a href="/album/{{ album.item_slug }}">{{ album.item }}</a></p>
-                {% endfor %}
-        {% endif %}
-        {% if songs %}
-        <audio preload></audio>
-
-            <h4>Songs</h4>
-                <form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
+        <form action="{% url 'blob' %}" method = "post" enctype = "multipart/form-data">
             {% csrf_token %}
-            <div class="table-responsive">
+        <div class="table-responsive">
                 <table class="sortable-theme-bootstrap table-hover" data-sortable >
                     <thead>
                     
                                 <th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>
                                 <th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </th>
                                 <th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ARTIST </th>
-                                <th data-sorted="false" class="col-md-5" style="font-weight:bold;"> DOWNLOAD </th>
+                                <th data-sorted="false" class = "col-md-5" style="font-weight:bold;"> SELECT </th>
                         
                     </thead>
                     {% load filetransfers %}
-                    {% for song in songs %}
+                    {% for song in songList %}
                     {% url "music_stream.views.serve" pk=song.pk as fallback_url %} 
                     <tr>
                                 <td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
@@ -45,13 +38,17 @@
                     {% endfor %}
                 </table>    
             </div>
-
-
-        </div><br>
-        <input class="btn btn-primary" type="submit" name="purge_selection" value="Delete Selection" />
-    </form>
-        {% endif %}
-
-    
-
+            <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="purge_selection" value="Purge Selected" />
+            <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="purge_all" value="PURGE ALL" />
+        </form>
+        {{error}}
+    {% else %}
+        <p>No documents.</p>
+    {% endif %}
 {% endblock %}
+{% block title_block %}Blobstore Total Access{% endblock %}
+{% block noside %}{% endblock %}
+    
+    </body>
+</html> 
+

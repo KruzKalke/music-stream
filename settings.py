@@ -77,8 +77,22 @@ WSGI_APPLICATION = 'muse.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': DATABASES['default']}
+# DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': DATABASES['default']}
+DATABASES = {
+    'default': {
+        'ENGINE': 'dbindexer',
+        'TARGET': 'gae',
+    },
+    'gae': {
+        'ENGINE': 'djangoappengine.db',
+    },
+}
 
+DBINDEXER_BACKENDS = (
+    'dbindexer.backends.BaseResolver',
+    'dbindexer.backends.FKNullFix',
+    'dbindexer.backends.ConstantFieldJOINResolver',
+)
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'dbindexer',

@@ -8,8 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 		url(r'^serve/(?P<pk>.+)$', views.serve, name='serve'),
-		url(r'^purge/$', views.purge , name='purge'),
-		url(r'^purgeall/$', views.purgeall , name='purgeall'),
+		url(r'^blob/', views.blob , name='blob'),
         url(r'^$', views.index, name='index'),
         url(r'^search$', views.search, name='search'),
         url(r'^album/(?P<album_name_slug>[\w\-]+)/$', views.album, name='album'),
@@ -17,3 +16,4 @@ urlpatterns = patterns('',
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
+#'/serve/([^/]+)?'
