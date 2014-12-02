@@ -10,11 +10,49 @@
 </form>
 
 
-<audio preload></audio>
-	<h3 style="color:black;font-size:16px;">Music</h3>
-    {% if songList %}
 
-    
+</br>
+</br>
+<audio preload></audio>
+</br>
+
+<!-- FOR THE TABLE AND SONG -->
+
+{% if songList %}
+			<div class="table-responsive">
+				<table id="myTable" class="sortable-theme-bootstrap table-hover" data-sortable >
+					<thead>					
+								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>
+								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </th>
+								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> ARTIST </th>
+					</thead>
+
+					{% for song in songList %}	
+					<tr>
+								<td id="table-value" class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
+								<td id="table-value" >   {{song.album}}</td>
+								<td id="table-value" > {{song.artist}}</td>
+					</tr>
+					{% endfor %}
+				</table>    
+			</div>
+
+
+
+<ul id="contextMenu" class="dropdown-menu" role="menu">
+    <li><a tabindex="-1" href="#">Play</a></li>
+   <!-- <li><a tabindex="-1" href="#"></a></li>
+    <li><a tabindex="-1" href="#"></a></li>
+    <li class="divider"></li>
+    <li><a tabindex="-1" href="#">Separated link</a></li>
+	-->
+</ul>
+
+
+
+
+<!--
+
 		<div class="song-list-div">
 			<div class="col-xs-5">
 				<ol class="song-list">
@@ -25,7 +63,7 @@
 				{% endfor %}
 				</ol>
 			</div>
-
+-->
 
 <!-- 			<div class="col-xs-1">
 				<ul class="song-list">

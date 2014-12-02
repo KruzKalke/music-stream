@@ -35,7 +35,6 @@
 } 
 
 .song-name:hover {
-	background-color: #ccc;
 	color: black;
 	text-decoration: none;
 }
@@ -69,3 +68,14 @@ background-image: -moz-linear-gradient(center top, #222 0%, #333 50%, #222 51%, 
 -webkit-box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.15); -moz-box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.15); }
 .track-details:before { content: '♬ '; }
 .track-details em { font-style: normal; color: #999; }
+
+#table-value {
+	text-transform: capitalize;
+}
+
+#contextMenu {
+	position: absolute;
+	display: none;
+}
+
+
