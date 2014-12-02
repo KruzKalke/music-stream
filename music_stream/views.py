@@ -119,6 +119,7 @@ def album(request,album_name_slug):
 	songs = Song.objects.filter(owner=request.user.username).filter(album_slug=album_name_slug)
 	context_dict['songs'] = songs
 	context_dict['self'] = album_name_slug
+	context_dict['album'] = songs[0].album
 
 	if request.method == 'POST':
 		if 'purge_all' in request.POST:
@@ -136,11 +137,17 @@ def album(request,album_name_slug):
 
 def artist(request,artist_name_slug):
 	context_dict = {}
-	albums = Song.objects.filter(owner=request.user.username).filter(artist_slug=artist_name_slug).order_by().values('album','album_slug')
+	albumz = set([s.album for s in Song.objects.filter(owner=request.user.username).filter(artist_slug=artist_name_slug)])
 	songs = Song.objects.filter(owner=request.user.username).filter(artist_slug=artist_name_slug)
-	
+	albums = []
+	for a in albumz:
+		b= Result(item=a, item_slug=slugify(a))
+		albums.append(b)
 	context_dict['songs'] = songs
 	context_dict['self'] = artist_name_slug
+	context_dict['artist'] = songs[0].artist
+
+
 	context_dict['albums'] = albums
 	if request.method == 'POST':
 		if 'purge_all' in request.POST:

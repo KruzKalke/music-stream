@@ -2,17 +2,20 @@
 
 {% block body_block %}
 
-<h3></h3>
+
+    <h3>{{ artist }}</h3>
         {% if albums %}
             <h4>Albums</h4>
                 {% for album in albums %}
-                    <p><a href="/album/{{ album.album_slug }}">{{ album.album }}</a></p>
+                    <p><a href="/album/{{ album.item_slug }}">{{ album.item }}</a></p>
                 {% endfor %}
         {% endif %}
 
-        <audio preload></audio>
         
+
         {% if songs %}
+            <h4>All Songs</h4>
+            <audio preload></audio>
             <form action="{% url 'artist' artist_name_slug=self %}" method = "post" enctype = "multipart/form-data">
             {% csrf_token %}
             <div class="table-responsive">
