@@ -18,28 +18,27 @@ class CustomStorage(FileSystemStorage):
 		#if the file does not exist, save the file
 		return super(CustomStorage, self)._save(file_name, content)		
 
-class Music(models.Model):
-	name = models.CharField(max_length=128,unique=True)
-	blue = 'hello'
-	musicfile = models.FileField(upload_to='music/%Y/%m/%d')
+class Person(models.Model):
+	name = models.CharField(max_length=30,default=None,primary_key=True,unique=True)
 
-	def __unicode__(self):
+	def get_name(self):
 		return self.name
 
-	def save(self, *args, **kwargs):
-		self.name = splitext(self.name)[0]
-		super(Music,self).save(*args, **kwargs)
-
 class Song(models.Model):
-	owner = models.CharField(max_length=30,default=None)
+	owner = models.ForeignKey('Person')
+	shared_with = models.ManyToManyField('Person', related_name='songs')
+	in_playlists = models.ManyToManyField('Playlist', related_name='playlists')
+
 	file_name = models.CharField(max_length=128)
 	songfile = models.FileField(upload_to='music/%Y/%m/%d',storage=CustomStorage())
 	md5sum = models.CharField(max_length=36,default=None)
+
 	title = models.CharField(max_length=128,default='untitled')
 	artist = models.CharField(max_length=128,default='unknown')
 	album = models.CharField(max_length=128,default='unknown')
 	track_num = models.PositiveSmallIntegerField(default=1)
 	length = models.PositiveSmallIntegerField(default=0)
+
 	artist_slug = models.SlugField(max_length=128,default='unknown')
 	album_slug = models.SlugField(max_length=128,default='unknown')
 
@@ -73,9 +72,9 @@ class Song(models.Model):
 		super(Song,self).save()
 
 class Playlist(models.Model):
-	owner = models.CharField(max_length=30,default=None)
+	owner = models.ForeignKey('Person', default=None)
 	title = models.CharField(max_length=128,default='untitled')
-	songs = models.ManyToManyField(Song)
+	songs = models.ManyToManyField('Song', related_name='songs')
 
 	def __unicode__(self):
 		return self.title

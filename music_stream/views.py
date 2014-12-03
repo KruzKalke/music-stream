@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 
-from music_stream.models import  Song
+from music_stream.models import  Song, Person
 from music_stream.forms import SongForm
 
 
@@ -15,7 +15,10 @@ def index(request):
 			if 'upload_submit' in request.POST:
 				form = SongForm(request.POST, request.FILES)
 				if form.is_valid():
-					newsong = Song(owner=request.user.username, file_name=request.FILES['songfile'].name, songfile=request.FILES['songfile'])
+					#name = Person(name=request.user.username)
+					name = Person(name=request.user.username)
+					name.save()
+					newsong = Song(owner=name, file_name=request.FILES['songfile'].name, songfile=request.FILES['songfile'])
 					newsong.save()
 					newsong.update()
 				# Redirect to the document list after POST
@@ -25,7 +28,8 @@ def index(request):
 			form = SongForm() # A empty, unbound forms
 
 			# Load documents for the list page
-		songList = Song.objects.filter(owner=request.user.username)
+		name = Person(name=request.user.username)
+		songList = Song.objects.filter(owner=name)
 			# Render list page with the documents and the form
 		return render_to_response(
 							'music_stream/index.html',
@@ -47,12 +51,13 @@ def search(request):
 			if 'search_submit' in request.POST:
 				query = request.POST['query'].strip()
 				if query:
-					artists = Song.objects.filter(owner=request.user.username).filter(artist__icontains=query).order_by().values('artist','artist_slug').distinct()
+					name = Person(name=request.user.username)
+					artists = Song.objects.filter(owner=name).filter(artist__icontains=query).order_by().values('artist','artist_slug').distinct()
 					# search for albums matching the query or albums from the artist matching the query
-					albums = Song.objects.filter(owner=request.user.username).filter(Q(album__icontains=query) | Q(artist__icontains=query)).order_by().values('album','album_slug').distinct()
+					albums = Song.objects.filter(owner=name).filter(Q(album__icontains=query) | Q(artist__icontains=query)).order_by().values('album','album_slug').distinct()
 
 
-					songs = Song.objects.filter(owner=request.user.username).filter(Q(title__icontains=query) | Q(artist__icontains=query) | Q(album__icontains=query))
+					songs = Song.objects.filter(owner=name).filter(Q(title__icontains=query) | Q(artist__icontains=query) | Q(album__icontains=query))
 					context_dict['query'] = query
 					context_dict['artists'] = artists
 					context_dict['songs'] = songs
@@ -70,15 +75,17 @@ def search(request):
 
 def album(request,album_name_slug):
 	context_dict = {}
-	songs = Song.objects.filter(owner=request.user.username).filter(album_slug__icontains=album_name_slug)
+	name = Person(name=request.user.username)
+	songs = Song.objects.filter(owner=name).filter(album_slug__icontains=album_name_slug)
 	context_dict['songs'] = songs
 
 	return render(request, 'music_stream/album.html',context_dict)
 
 def artist(request,artist_name_slug):
 	context_dict = {}
-	albums = Song.objects.filter(owner=request.user.username).filter(artist_slug__icontains=artist_name_slug).order_by().values('album','album_slug').distinct()
-	songs = Song.objects.filter(owner=request.user.username).filter(artist_slug__icontains=artist_name_slug)
+	name = Person(name=request.user.username)
+	albums = Song.objects.filter(owner=name).filter(artist_slug__icontains=artist_name_slug).order_by().values('album','album_slug').distinct()
+	songs = Song.objects.filter(owner=name).filter(artist_slug__icontains=artist_name_slug)
 	context_dict['albums'] = albums
 	context_dict['songs'] = songs
 
