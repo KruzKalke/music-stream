@@ -8,7 +8,18 @@
      <input class="form-control" type="text" size="50" name="query" value="{{query}}" id="query" />
      <input class="btn btn-primary" type="submit" name="search_submit" value="Search" />
 </form>
+<!-- <div style="clear:both;margin-bottom:100px;"></div> -->
+    	<h3 style="color:black;font-size:16px;">Add Songs</h3>
+        <!-- Upload form. Note enctype attribute! -->
+        {% load filetransfers %}
+        <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
 
+            {% csrf_token %}
+            {% render_upload_data upload_data %}
+            <table>{{ form }}</table>
+           <!-- <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" /> -->
+           <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="upload_submit" value="Upload" />
+        </form>
 
 
 </br>
@@ -26,7 +37,7 @@
 								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>
 								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </th>
 								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ARTIST </th>
-								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> DOWNLOAD </th>
+								<th data-sorted="false" class="col-md-2" style="font-weight:bold;"> DOWNLOAD </th>
 						
 					</thead>
 					{% load filetransfers %}
@@ -36,7 +47,49 @@
 								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
 								<td> <a href="{% url 'album' album_name_slug=song.album_slug %}">{{song.album}}</a></td>
 								<td> <a href="{% url 'artist' artist_name_slug=song.artist_slug %}">{{song.artist}}</a></td>
-								<td><a href="{% firstof upload.file|public_download_url fallback_url %}">DL</a>&nbsp;&nbsp;&nbsp;<input type="checkbox" name ="{{ song }}" value = "{{ song.title }}"></td>
+								<td><a href="{% firstof upload.file|public_download_url fallback_url %}">DL</a>&nbsp;&nbsp;&nbsp;<input type="checkbox" name ="{{ song.id }}" value = "{{ song.title }}"></td>
+					</tr>
+					{% endfor %}
+				</table>    
+			</div>
+
+
+		</div>
+		<input class="btn btn-primary" type="submit" name="purge_selection" value="Delete Selection" />
+		<input class="btn btn-primary" type="submit" name="purge_all" value="DELETE ALL" />
+		<input class="form-control" type="text" size="50" name="sharewith" placeholder= "Usernames or Playlist name" value="" id="sharedwith" /> 
+		<input class="btn btn-primary" type="submit" name="share" value="Share Selected" />
+		<input class="btn btn-primary" type="submit" name="create" value="Create Playlist" />{{ error }}
+		<br>
+	</form>
+    {% else %}
+        <p>:( Your library is empty! Get started by uploading a song above.</p>
+    {% endif %}
+
+    {% if sharedList %}
+    <br><br>
+    <h4>Shared Music:</h4>
+	<form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
+		<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
+            {% csrf_token %}
+			<div class="table-responsive">
+				<table class="sortable-theme-bootstrap table-hover" data-sortable >
+					<thead>
+					
+								<th data-sorted="false" data-sorted-direction="descending" class="col-md-1" style="font-weight:bold;"> TITLE </th>
+								<th data-sorted="false" class="col-md-1" style="font-weight:bold;"> ALBUM </th>
+								<th data-sorted="false" class="col-md-1" style="font-weight:bold;"> ARTIST </th>
+								<th data-sorted="false" class="col-md-1" style="font-weight:bold;"> SELECT </th>
+						
+					</thead>
+					{% load filetransfers %}
+					{% for song in sharedList %}
+					{% url "music_stream.views.serve" pk=song.pk as fallback_url %}	
+					<tr>
+								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
+								<td> <a href="{% url 'album' album_name_slug=song.album_slug %}">{{song.album}}</a></td>
+								<td> <a href="{% url 'artist' artist_name_slug=song.artist_slug %}">{{song.artist}}</a></td>
+								<td>&nbsp;&nbsp;&nbsp;<input type="checkbox" name ="{{ song.id }}" value = "{{ song.title }}"></td>
 					</tr>
 					{% endfor %}
 				</table>    
@@ -44,25 +97,11 @@
 
 
 		</div><br>
-		<input class="btn btn-primary" type="submit" name="purge_selection" value="Delete Selection" />
-		<input class="btn btn-primary" type="submit" name="purge_all" value="DELETE ALL" />
 	</form>
-    {% else %}
-        <p>:( Your library is empty! Get started by uploading a song below.</p>
+
     {% endif %}
-
-    <div style="clear:both;margin-bottom:100px;"></div>
-    	<h3 style="color:black;font-size:16px;">Add Songs</h3>
-        <!-- Upload form. Note enctype attribute! -->
-        {% load filetransfers %}
-        <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
-
-            {% csrf_token %}
-            {% render_upload_data upload_data %}
-            <table>{{ form }}</table>
-           <!-- <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" /> -->
-           <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="upload_submit" value="Upload" />
-        </form>
+    <!-- <h4>Test</h4> -->
+    
 
 
 
@@ -71,9 +110,31 @@
 
 {% block side_block %}
 	<p>To be Implemented...</p>
-	<p>Shared Music:</p>
-	<p>Music Shared with You:</p>
-	<a href ="{% url 'index' %}">Access Shared Here</a>
+	<h4>Shared Music:</h4>
+	{% if songList %}
+		{% for song in songList %}
+			{% if song.shared %}
+				{{ song.title }} WITH {{ song.shared }} <br><br>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+	<br><br>
+	<h4>Music Shared with You:</h4>
+	{% if sharedList %}
+		{% for shar in sharedList %}
+			{{ shar.title }} FROM {{ shar.owner }} <br><br>
+		{% endfor %}
+	{% endif %}
+	<h4>Playlists:</h4>
+	{% if playlists %}
+		<form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
+			{% csrf_token %}
+		{% for playlist in playlists %}
+			<a href= "{% url 'playlist' playlist_name_slug=playlist.name_slug %}">{{ playlist.name }}</a>&nbsp;<input type="checkbox" name ="{{ playlist.id }}" value = "{{ playlist.name }}"><br>
+		{% endfor %}
+		<input class="btn btn-primary" type="submit" name="delete" value="Delete" />
+		</form>
+	{% endif %}
 {% endblock %}
 
 <div>

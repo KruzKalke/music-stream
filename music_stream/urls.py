@@ -13,6 +13,7 @@ urlpatterns = patterns('',
         url(r'^search$', views.search, name='search'),
         url(r'^album/(?P<album_name_slug>[\w\-]+)/$', views.album, name='album'),
         url(r'^artist/(?P<artist_name_slug>[\w\-]+)/$', views.artist, name='artist'),
+        url(r'^playlist/(?P<playlist_name_slug>[\w\-]+)/$', views.playlist, name='playlist'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

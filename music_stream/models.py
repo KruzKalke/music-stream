@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Model
 from django.template.defaultfilters import slugify
+from djangotoolbox.fields import ListField
 from os.path import splitext
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, TIT2, TPE1, COMM, TALB
@@ -28,7 +29,7 @@ import hashlib
 
 class Song(models.Model):
 	owner = models.CharField(max_length=30,default=None)
-	shared = []
+	shared = ListField()
 	file_name = models.CharField(max_length=128)
 	songfile = models.FileField(upload_to='music/%Y/%m/%d')
 	md5sum = models.CharField(max_length=36,default=None)
@@ -53,11 +54,14 @@ class Song(models.Model):
 					md5.update(chunk)
 			self.md5sum = md5.hexdigest()
 		super(Song,self).save(*args, **kwargs)
+	def saveTags(self, *args, **kwargs):
+		super(Song,self).save(*args, **kwargs)
 
 	def update(self):
 		#s= serve_file(self, self.songfile, save_as=True)
 		#s= "/serve/"+ str(self.pk)
 		s=self.songfile.file.blobstore_info
+		self.shared = ['test']
 		# s= blobstore.BlobInfo.get(r)
 		# s= self.songfile.file.blobstore_info
 		# s = images.get_serving_url(r)
@@ -89,7 +93,40 @@ class Song(models.Model):
 		self.track_num = tmp[0]
 		
 		super(Song,self).save()
+	def share(self, user):
+		self.shared.append(user)
+		super(Song,self).save()
+	def deshare(self, user):
+		self.shared.remove(user)
+		super(Song,self).save()
 
 class Result(models.Model):
 	item = models.CharField(max_length=128,default='unknown')
 	item_slug= models.SlugField(max_length=128,default='unknown')
+
+class Playlist(models.Model):
+	owner = models.CharField(max_length=30,default=None)
+	name = models.CharField(max_length=30,default=None)
+	name_slug = models.SlugField(max_length=128,default='unknown')
+	songs = ListField()
+
+
+	def __unicode__(self):
+		return self.name
+
+
+	def save(self, *args, **kwargs):
+		self.name_slug = slugify(self.name)
+		super(Playlist,self).save(*args, **kwargs)
+
+	def add(self, song):
+
+		self.songs.append(song)
+		set(self.songs)
+		super(Playlist, self).save()
+
+	def remove(self, song):
+
+		self.songs.remove(song)
+		set(self.songs)
+		super(Playlist, self).save()
