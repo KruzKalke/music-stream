@@ -44,7 +44,7 @@ def search(request):
 
 	if request.user.is_authenticated():
 		if request.method == 'POST':
-			if 'search_submit' in request.POST:
+			if 'query' in request.POST:
 				query = request.POST['query'].strip()
 				if query:
 					artists = Song.objects.filter(owner=request.user.username).filter(artist__icontains=query).order_by().values('artist','artist_slug').distinct()

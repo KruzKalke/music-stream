@@ -45,7 +45,7 @@
        
        // Load in the first track
        var audio = a[0];
-           first = $('.song a').attr('data-src');
+       first = $('.song a').attr('data-src');
        $('.song').first().addClass('playing');
        audio.load(first);
 
@@ -58,26 +58,46 @@
          audio.load($('a', this).attr('data-src'));
          audio.play();
        });
-       // Keyboard shortcuts
-       $(document).keydown(function(e) {
-        	var unicode = e.charCode ? e.charCode : e.keyCode;
-            // right arrow
-        	 if (unicode == 39){ 
-          	 var next = $('.song.playing').next();
+
+      // Custom jquery for buttons
+      $('.play2').click(function(e) {
+         audio.playPause();
+      });
+
+      $('.next2').click(function(e) {
+      	
+         var cellIndex = $('.song.playing').index();  
+           var next = $('.song.playing').parent().closest('tr').next().children().eq(cellIndex);
+           $prev = $('.song.playing');
+         $prev.removeClass('playing');	
            if (!next.length) next = $('.song').first();
-           next.click();
-					}
-           // back arrow
-         		else if (unicode == 37) {
-          		var prev = $('.song.playing').prev();
-          	 	if (!prev.length) prev = $('.song').last();
-          	 	prev.click();
+           next.addClass('playing').siblings().removeClass('playing');
+           audio.load($('a', next).attr('data-src'));
+           audio.play();
+      });
+
+
+
+       // Keyboard shortcuts
+     //   $(document).keydown(function(e) {
+     //    	var unicode = e.charCode ? e.charCode : e.keyCode;
+     //        // right arrow
+     //    	 if (unicode == 39){ 
+     //      	 var next = $('.song.playing').next();
+     //       if (!next.length) next = $('.song').first();
+     //       next.click();
+					// }
+     //       // back arrow
+     //     		else if (unicode == 37) {
+     //      		var prev = $('.song.playing').prev();
+     //      	 	if (!prev.length) prev = $('.song').last();
+     //      	 	prev.click();
            // spacebar
           //} else if (unicode == 32) {
            // audio.playPause();
          //}
-       			}
-			})
+   //     			}
+			// })
 
     
 		 });
@@ -102,12 +122,29 @@
           <a class="navbar-brand" href="#">Muse</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
+        	<ul class="nav navbar-nav">
+            <div class="control-buttons container-fluid">
+            	<span class="glyphicon glyphicon-backward navbar-link control-btn"></span>
+            	<span class="glyphicon glyphicon-play navbar-link play2 control-btn"></span>
+            	<span class="glyphicon glyphicon-forward navbar-link next2 control-btn "></span>
+            </div>
+         </ul>
+
+         <ul class="nav navbar-nav">
+            <div class="container-fluid">
+            	<div class="song-information">
+            		<span class="si-artist"></span>-<span class="si-title"></span>
+            	</div>
+            	<audio preload></audio>
+            </div>
+         </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'auth_login' %}">Logout</a></li>
           </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
+          <form class="navbar-form navbar-right" id="user_form" method="post" action="{% url "search" %}">
+          {% csrf_token %}
+            <input type="text" class="form-control" placeholder="Search..." name="query" value="{{query}}" id="query">
           </form>
         </div>
       </div>
@@ -124,77 +161,77 @@
           </div>
 
 		<script>
-							(function ($, window) {
-									$.fn.contextMenu = function (settings) {
-											return this.each(function () {
-													// Open context menu
-													$(this).on("contextmenu", function (e) {
-															//open menu
-															$(settings.menuSelector)
-																	.data("invokedOn", $(e.target))
-																	.show()
-																	.css({
-																			position: "absolute",
-																			left: getLeftLocation(e),
-																			top: getTopLocation(e)
-																	})
-																	.off('click')
-																	.on('click', function (e) {
-																			$(this).hide();
-															
-																			var $invokedOn = $(this).data("invokedOn");
-																			var $selectedMenu = $(e.target);
-																			
-																			settings.menuSelected.call(this, $invokedOn, $selectedMenu);
-															});
-															
-															return false;
-													});
+			(function($, window) {
+			   $.fn.contextMenu = function(settings) {
+			      return this.each(function() {
+			         // Open context menu
+			         $(this).on("contextmenu", function(e) {
+			            //open menu
+			            $(settings.menuSelector)
+			               .data("invokedOn", $(e.target))
+			               .show()
+			               .css({
+			                  position: "absolute",
+			                  left: getLeftLocation(e),
+			                  top: getTopLocation(e)
+			               })
+			               .off('click')
+			               .on('click', function(e) {
+			                  $(this).hide();
 
-													//make sure menu closes on any click
-													$(document).click(function () {
-															$(settings.menuSelector).hide();
-													});
-											});
+			                  var $invokedOn = $(this).data("invokedOn");
+			                  var $selectedMenu = $(e.target);
 
-											function getLeftLocation(e) {
-												
-													var mouseWidth = e.pageX- document.getElementById("sidebar").offsetWidth;
-													var pageWidth = $(window).width();
-													var menuWidth = $(settings.menuSelector).width();
-													
-													// opening menu would pass the side of the page
-													if (mouseWidth + menuWidth > pageWidth &&
-															menuWidth < mouseWidth) {
-															return mouseWidth - menuWidth;
-													} 
-													return mouseWidth;
-											}        
-											
-											function getTopLocation(e) {
-													var mouseHeight = e.pageY - document.getElementById("navbar").offsetHeight; //- parentOffset.top;
-													var pageHeight = $(window).height();
-													var menuHeight = $(settings.menuSelector).height();
+			                  settings.menuSelected.call(this, $invokedOn, $selectedMenu);
+			               });
 
-													// opening menu would pass the bottom of the page
-													if (mouseHeight + menuHeight > pageHeight &&
-															menuHeight < mouseHeight) {
-															return mouseHeight - menuHeight;
-													} 
-													return mouseHeight;
-											}
-									};
-							})(jQuery, window);
+			            return false;
+			         });
 
-							$("#myTable .song").contextMenu({
-									menuSelector: "#contextMenu",
-									menuSelected: function (invokedOn, selectedMenu) {
-											var msg = "You selected the menu item '" + selectedMenu.text() +
-													"' on the value '" + invokedOn.title() + "'";
-											
-											alert(msg);
-									}
-							});
+			         //make sure menu closes on any click
+			         $(document).click(function() {
+			            $(settings.menuSelector).hide();
+			         });
+			      });
+
+			      function getLeftLocation(e) {
+
+			         var mouseWidth = e.pageX - document.getElementById("sidebar").offsetWidth;
+			         var pageWidth = $(window).width();
+			         var menuWidth = $(settings.menuSelector).width();
+
+			         // opening menu would pass the side of the page
+			         if (mouseWidth + menuWidth > pageWidth &&
+			            menuWidth < mouseWidth) {
+			            return mouseWidth - menuWidth;
+			         }
+			         return mouseWidth;
+			      }
+
+			      function getTopLocation(e) {
+			         var mouseHeight = e.pageY - document.getElementById("navbar").offsetHeight; //- parentOffset.top;
+			         var pageHeight = $(window).height();
+			         var menuHeight = $(settings.menuSelector).height();
+
+			         // opening menu would pass the bottom of the page
+			         if (mouseHeight + menuHeight > pageHeight &&
+			            menuHeight < mouseHeight) {
+			            return mouseHeight - menuHeight;
+			         }
+			         return mouseHeight;
+			      }
+			   };
+			})(jQuery, window);
+
+	$("#myTable .song").contextMenu({
+	   menuSelector: "#contextMenu",
+	   menuSelected: function(invokedOn, selectedMenu) {
+	      var msg = "You selected the menu item '" + selectedMenu.text() +
+	         "' on the value '" + invokedOn.title() + "'";
+
+	      alert(msg);
+	   }
+});
 						</script>
         </div>
       </div>
