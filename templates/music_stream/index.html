@@ -1,24 +1,53 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+
+<form class="form-inline" id="user_form" method="post" action="{% url "search" %}">
+     {% csrf_token %}
+     <!-- Display the search form elements here -->
+     <input class="form-control" type="text" size="50" name="query" value="{{query}}" id="query" />
+     <input class="btn btn-primary" type="submit" name="search_submit" value="Search" />
+</form>
+
+
+
+</br>
+</br>
+
 <!-- FOR THE TABLE AND SONG -->
 
 {% if songList %}
 			<div class="table-responsive">
 				<table id="myTable" class="sortable-theme-bootstrap table-hover" data-sortable >
 					<thead>					
-								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>
-								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </th>
-								<th data-sorted="false" class="col-md-5" style="font-weight:bold;"> ARTIST </th>
+								<th data-sorted="false" data-sorted-direction="descending" class="col-xs-5 col-md-5" style="font-weight:bold;"> TITLE </th>
+								<th data-sorted="false" class="col-xs-2 col-md-2" style="font-weight:bold;"> ARTIST </th>
+								<th data-sorted="false" class="col-xs-1 col-md-1 glyphicon glyphicon-time" style="font-weight:bold;"> </th>
+								<th data-sorted="false" class="col-xs-4 col-md-4" style="font-weight:bold;"> ALBUM </th>
 					</thead>
 
-					{% for song in songList %}	
-					<tr>
-								<td id="table-value" class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
-								<td id="table-value" >   {{song.album}}</td>
-								<td id="table-value" > {{song.artist}}</td>
-					</tr>
-					{% endfor %}
+					<tbody>			
+						{% for song in songList %}	
+						<tr id = "row{{forloop.counter}}">
+									<td id="table-value" class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
+									<td id="table-value" > {{song.artist}}</td>	
+									<td id="table-duration{{forloop.counter}}" > 
+										<script type="text/javascript"> 
+									   var a = "{{song.length}}";
+										 var display = document.getElementById("table-duration" + {{forloop.counter}});
+										 var duration = Math.floor(a / 60) + ":" + a % 60;
+										 display.innerHTML = duration;
+										 //document.getElementById('duration').ineerHTML = duration.val();
+										 //alert(duration);
+
+
+											
+										</script>
+									 </td>
+									<td id="table-value" >   {{song.album}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>			
 				</table>    
 			</div>
 

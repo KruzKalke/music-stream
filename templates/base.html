@@ -31,73 +31,135 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script>
      $(function() { 
-       // Setup the player to autoplay the next track
+				
+				//function changePlayPause() {
+				//	$('#btnPlay').unbind().click( function(e){
+				//	$('#btnPlay').find('span').toggleClass('glyphicon-play').toggleClass('glyphicon-pause');					
+
+
+				//	alert("playPause called");
+					//$('#btnPlay').find('span').toggleClass('glyphicon-play').toggleClass('glyphicon-pause');								
+				//	});
+				//}
+ 				// changePlayPause();
+		 		 
+				 var queue = [];	
+				 var index = 0;
+				 var $table = $(myTable);
+			 //Goes through the table, and then pushes the url into table
+
+			 for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
+			 {
+					var $row = $table.find("tr:nth-child(" +  i +  ")");
+				 	var $target_td = $row.find("td:nth-child(1) a");
+					queue.push($target_td.attr('data-src'));
+					//alert($target_td.attr('data-src'));
+			 }
+				//alert(queue[0]);
+				       // Setup the player to autoplay the next track
        var a = audiojs.createAll({
-         trackEnded: function() {
-           var cellIndex = $('.song.playing').index();  
-           var next = $('.song.playing').parent().closest('tr').next().children().eq(cellIndex);
-           if (!next.length) next = $('.song').first();
-           next.addClass('playing').siblings().removeClass('playing');
-           audio.load($('a', next).attr('data-src'));
-           audio.play();
+         trackEnded: function() { 
+					index++;
+					if(index < queue.length)
+					{
+						audio.load(queue[index]);
+						audio.play();
+					}
          }
        });
        
        // Load in the first track
        var audio = a[0];
-       first = $('.song a').attr('data-src');
-       $('.song').first().addClass('playing');
-       audio.load(first);
+ 			 audio.load(queue[index]);
 
        // Load in a track on click
+
        $('.song').click(function(e) {
-         $prev = $('.song.playing');
-         $prev.removeClass('playing');
-         e.preventDefault();
-         $(this).addClass('playing');
-         audio.load($('a', this).attr('data-src'));
+				
+				 //Rebuild the queue. So it will adjust to the table that the user is currertly
+				 //looking at.
+				 queue = [];
+				 for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
+				 {
+						var $row = $table.find("tr:nth-child(" +  i +  ")");
+						var $target_td = $row.find("td:nth-child(1) a");
+						queue.push($target_td.attr('data-src'));
+						//alert($target_td.attr('data-src'));
+				 }
+
+         e.preventDefault();				
+				 $('.btnPlay').removeClass('glyphicon-play');
+				 $('.btnPlay').addClass('glyphicon-pause');
+				 index = jQuery.inArray($('a', this).attr('data-src'), queue);
+	     	 audio.load(queue[index]);
          audio.play();
        });
 
-      // Custom jquery for buttons
-      $('.play2').click(function(e) {
-         audio.playPause();
-      });
+		document.getElementById('abc').onclick = function() {
 
-      $('.next2').click(function(e) {
-      	
-         var cellIndex = $('.song.playing').index();  
-           var next = $('.song.playing').parent().closest('tr').next().children().eq(cellIndex);
-           $prev = $('.song.playing');
-         $prev.removeClass('playing');	
-           if (!next.length) next = $('.song').first();
-           next.addClass('playing').siblings().removeClass('playing');
-           audio.load($('a', next).attr('data-src'));
-           audio.play();
-      });
+		    var className = ' ' + abc.className + ' ';
+
+		    if ( ~className.indexOf(' glyphicon-play ') ) {
+		        this.className = className.replace(' glyphicon-play ', ' glyphicon-pause ');
+		        audio.playPause();
+		    } 
+
+		    else if ( ~className.indexOf(' glyphicon-pause ') ) {
+		        this.className = className.replace(' glyphicon-pause ', ' glyphicon-play ');
+		        audio.playPause();
+		    }           
+		}
+		
+			$(".glyphicon-forward").click(function(e) {
+				if(index < queue.length-1)
+			  {
+				 index++;
+				 //alert(index);
+				 audio.load(queue[index]);
+				 audio.play();
+			  } 
+			});
+			
+			$(".glyphicon-backward").click(function(e) {
+				if(index > 0) {
+		 		 index--;
+				 audio.load(queue[index]);
+				 audio.play();
+				}
+			});				
 
 
 
        // Keyboard shortcuts
-     //   $(document).keydown(function(e) {
-     //    	var unicode = e.charCode ? e.charCode : e.keyCode;
-     //        // right arrow
-     //    	 if (unicode == 39){ 
-     //      	 var next = $('.song.playing').next();
-     //       if (!next.length) next = $('.song').first();
-     //       next.click();
-					// }
-     //       // back arrow
-     //     		else if (unicode == 37) {
-     //      		var prev = $('.song.playing').prev();
-     //      	 	if (!prev.length) prev = $('.song').last();
-     //      	 	prev.click();
+       $(document).keydown(function(e) {
+        	var unicode = e.charCode ? e.charCode : e.keyCode;
+            // right arrow
+        	 if (unicode == 39){ 
+						// This if statement checks whether you are playing
+						// out of the queue. 
+						if(index < queue.length-1)
+						 {
+							 index++;
+							 //alert(index);
+							 audio.load(queue[index]);
+							 audio.play();
+						 }
+     			}
+           // back arrow
+         		else if (unicode == 37)
+							{
+								if(index > 0)
+								{
+									index--;
+									audio.load(queue[index]);
+									audio.play();
+								}          		
            // spacebar
           //} else if (unicode == 32) {
            // audio.playPause();
          //}
-   //     			}
-			// })
+       			}
+			})
 
     
 		 });
@@ -125,8 +187,8 @@
         	<ul class="nav navbar-nav">
             <div class="control-buttons container-fluid">
             	<span class="glyphicon glyphicon-backward navbar-link control-btn"></span>
-            	<span class="glyphicon glyphicon-play navbar-link play2 control-btn"></span>
-            	<span class="glyphicon glyphicon-forward navbar-link next2 control-btn "></span>
+				<span id="abc" class="btnPlay glyphicon glyphicon-play navbar-link play2 control-btn"></span>
+				<span class="glyphicon glyphicon-forward navbar-link next2 control-btn "></span>
             </div>
          </ul>
 
