@@ -11,13 +11,13 @@
     <body>
         {% block body_block %}
     <!-- List of uploaded documents -->
-    <audio preload></audio>
+    <!-- <audio preload></audio> -->
     {% if songList %}
 
         <form action="{% url 'blob' %}" method = "post" enctype = "multipart/form-data">
             {% csrf_token %}
         <div class="table-responsive">
-                <table class="sortable-theme-bootstrap table-hover" data-sortable >
+                <table id="myTable" class="sortable-theme-bootstrap table-hover" data-sortable >
                     <thead>
                     
                                 <th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>

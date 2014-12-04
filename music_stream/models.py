@@ -61,7 +61,7 @@ class Song(models.Model):
 		#s= serve_file(self, self.songfile, save_as=True)
 		#s= "/serve/"+ str(self.pk)
 		s=self.songfile.file.blobstore_info
-		self.shared = ['test']
+		self.shared = []
 		# s= blobstore.BlobInfo.get(r)
 		# s= self.songfile.file.blobstore_info
 		# s = images.get_serving_url(r)
@@ -82,6 +82,12 @@ class Song(models.Model):
 		self.artist_slug = slugify(self.artist)
 		self.album_slug = slugify(self.album)
 		self.title_slug = slugify(self.title)
+		if not self.artist_slug:
+			self.artist_slug = 'Unreadable'
+		if not self.album_slug:
+			self.album_slug = 'Unreadable'
+		if not self.title_slug:
+			self.title_slug = 'Unreadable'
 		tmp = mp3file.info.length
 		tmp = str(tmp).split(".",1)
 		self.length = tmp[0]

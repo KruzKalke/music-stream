@@ -64,9 +64,13 @@ def index(request):
 							#sharedList.append(s)
 							# raise Exception("share")
 			if 'deshar' in request.POST:
-				for s in sharedList:
-					if str(s.id) in request.POST:
-						s.deshare(str(request.user.username))
+					for s in sharedList:
+						if str(s.id) in request.POST:
+							if s.owner == request.user.username:
+								s.shared = []
+								s.saveTags()
+							else:
+								s.deshare(str(request.user.username))
 			if 'create' in request.POST:
 				shar = request.POST['sharewith'].strip()
 				if shar:
@@ -81,10 +85,10 @@ def index(request):
 						newlist.save()
 						for s in songList:
 							if str(s.id) in request.POST:
-								newlist.add(s.file_name)
+								newlist.add(s.id)
 						for s in sharedList:
 							if str(s.id) in request.POST:
-								newlist.add(s.file_name)
+								newlist.add(s.id)
 			if 'delete' in request.POST:
 				for p in set([p for p in Playlist.objects.filter(owner=request.user.username)]):
 					if str(p.id) in request.POST:
@@ -96,7 +100,7 @@ def index(request):
 			q = p.songs[:]
 			p.songs = []
 			for s in q:
-				p.songs.append(Song.objects.get(file_name=s))
+				p.songs.append(Song.objects.get(id=s))
 		form = SongForm() # A empty, unbound forms
 
 			# Load documents for the list page
@@ -115,7 +119,7 @@ def search(request):
 
 	if request.user.is_authenticated():
 		if request.method == 'POST':
-			if 'search_submit' in request.POST:
+			if 'query' in request.POST:
 				context_dict = {}
 				context_dict['artists'] = None
 				context_dict['songs'] = None
@@ -193,7 +197,7 @@ def playlist(request, playlist_name_slug):
 		q = playlist.songs[:]
 		playlist.songs = []
 		for s in q:
-			playlist.songs.append(Song.objects.get(file_name=s))
+			playlist.songs.append(Song.objects.get(id=s))
 		context_dict['self'] = playlist_name_slug
 		context_dict['playlist'] = playlist
 		return render(request, 'music_stream/playlist.html',context_dict)

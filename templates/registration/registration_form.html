@@ -2,7 +2,7 @@
 
 
 {% block body_block %}
-
+	
 	<form class="form-signin" role="form" method="post" action=".">
 		<h2>Register</h2>
     	{% csrf_token %}
@@ -24,4 +24,7 @@
       	<p>Already a member? <a href="{% url 'auth_login' %}">Login</a>!</p>
   
   	</form>
+  	{% if form.errors %}
+                <p align="center"><font color="red" >That account is already in use, or there was another issue with your form..</font></p>
+        {% endif %}
 {% endblock %}

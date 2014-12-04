@@ -1,13 +1,6 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-
-<form class="form-inline" id="user_form" method="post" action="{% url "search" %}">
-     {% csrf_token %}
-     <!-- Display the search form elements here -->
-     <input class="form-control" type="text" size="50" name="query" value="{{query}}" id="query" />
-     <input class="btn btn-primary" type="submit" name="search_submit" value="Search" />
-</form>
 <!-- <div style="clear:both;margin-bottom:100px;"></div> -->
     	<h3 style="color:black;font-size:16px;">Add Songs</h3>
         <!-- Upload form. Note enctype attribute! -->
@@ -24,17 +17,18 @@
 
 </br>
 </br>
-<audio preload></audio>
+<!-- <audio preload></audio> -->
 
 
 {% if songList %}
 	<form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
             {% csrf_token %}
 			<div class="table-responsive">
-				<table class="sortable-theme-bootstrap table-hover" data-sortable >
+				<table id="myTable" class="sortable-theme-bootstrap table-hover" data-sortable >
 					<thead>
 					
 								<th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>
+								<th data-sorted="false" class="col-xs-1 col-md-1 glyphicon glyphicon-time" style="font-weight:bold;"> </th>
 								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ALBUM </th>
 								<th data-sorted="false" class="col-md-3" style="font-weight:bold;"> ARTIST </th>
 								<th data-sorted="false" class="col-md-2" style="font-weight:bold;"> DOWNLOAD </th>
@@ -44,7 +38,20 @@
 					{% for song in songList %}
 					{% url "music_stream.views.serve" pk=song.pk as fallback_url %}	
 					<tr>
-								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
+								<td id = "table-value" class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
+								<td id="table-duration{{forloop.counter}}" > 
+										<script type="text/javascript"> 
+									   var a = "{{song.length}}";
+										 var display = document.getElementById("table-duration" + {{forloop.counter}});
+										 var duration = Math.floor(a / 60) + ":" + a % 60;
+										 display.innerHTML = duration;
+										 //document.getElementById('duration').ineerHTML = duration.val();
+										 //alert(duration);
+
+
+											
+										</script>
+									 </td>
 								<td> <a href="{% url 'album' album_name_slug=song.album_slug %}">{{song.album}}</a></td>
 								<td> <a href="{% url 'artist' artist_name_slug=song.artist_slug %}">{{song.artist}}</a></td>
 								<td><a href="{% firstof upload.file|public_download_url fallback_url %}">DL</a>&nbsp;&nbsp;&nbsp;<input type="checkbox" name ="{{ song.id }}" value = "{{ song.title }}"></td>
@@ -52,18 +59,38 @@
 					{% endfor %}
 				</table>    
 			</div>
-
+			<ul id="contextMenu" class="dropdown-menu" role="menu">
+    <li><a tabindex="-1" href="#">Play</a></li>
+   <!-- <li><a tabindex="-1" href="#"></a></li>
+    <li><a tabindex="-1" href="#"></a></li>
+    <li class="divider"></li>
+    <li><a tabindex="-1" href="#">Separated link</a></li>
+	-->
+</ul>
 
 		</div>
+		<div class="btn-group" role="group" aria-label="...">
 		<input class="btn btn-primary" type="submit" name="purge_selection" value="Delete Selection" />
 		<input class="btn btn-primary" type="submit" name="purge_all" value="DELETE ALL" />
+		<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
+	</div>
+	<!-- </form>
+	<form class="form-inline" id="user_form" method="post" action="{% url 'index' %}">
+		{% csrf_token %} -->
+		<div class="input-group">
 		<input class="form-control" type="text" size="50" name="sharewith" placeholder= "Usernames or Playlist name" value="" id="sharedwith" /> 
+		
+		<span class="input-group-btn">
 		<input class="btn btn-primary" type="submit" name="share" value="Share Selected" />
-		<input class="btn btn-primary" type="submit" name="create" value="Create Playlist" />{{ error }}
+		<input class="btn btn-primary" type="submit" name="create" value="Create Playlist" />
+	</span>
+	</div>{{ error }}
 		<br>
+		
 	</form>
     {% else %}
         <p>:( Your library is empty! Get started by uploading a song above.</p>
+        
     {% endif %}
 
     {% if sharedList %}
@@ -73,10 +100,11 @@
 		<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
             {% csrf_token %}
 			<div class="table-responsive">
-				<table class="sortable-theme-bootstrap table-hover" data-sortable >
+				<table id="Table2" class="sortable-theme-bootstrap table-hover" data-sortable >
 					<thead>
 					
 								<th data-sorted="false" data-sorted-direction="descending" class="col-md-1" style="font-weight:bold;"> TITLE </th>
+								<th data-sorted="false" class="col-xs-1 col-md-1 glyphicon glyphicon-time" style="font-weight:bold;"> </th>
 								<th data-sorted="false" class="col-md-1" style="font-weight:bold;"> ALBUM </th>
 								<th data-sorted="false" class="col-md-1" style="font-weight:bold;"> ARTIST </th>
 								<th data-sorted="false" class="col-md-1" style="font-weight:bold;"> SELECT </th>
@@ -87,6 +115,19 @@
 					{% url "music_stream.views.serve" pk=song.pk as fallback_url %}	
 					<tr>
 								<td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
+								<td id="table-duration{{forloop.counter}}" > 
+										<script type="text/javascript"> 
+									   var a = "{{song.length}}";
+										 var display = document.getElementById("table-duration" + {{forloop.counter}});
+										 var duration = Math.floor(a / 60) + ":" + a % 60;
+										 display.innerHTML = duration;
+										 //document.getElementById('duration').ineerHTML = duration.val();
+										 //alert(duration);
+
+
+											
+										</script>
+									 </td>
 								<td> <a href="{% url 'album' album_name_slug=song.album_slug %}">{{song.album}}</a></td>
 								<td> <a href="{% url 'artist' artist_name_slug=song.artist_slug %}">{{song.artist}}</a></td>
 								<td>&nbsp;&nbsp;&nbsp;<input type="checkbox" name ="{{ song.id }}" value = "{{ song.title }}"></td>
@@ -98,7 +139,11 @@
 
 		</div><br>
 	</form>
-
+	{% else %}
+	<!-- <form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
+		{% csrf_token %}
+		<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
+	</form> -->
     {% endif %}
     <!-- <h4>Test</h4> -->
     
@@ -109,12 +154,16 @@
  {% endblock %}
 
 {% block side_block %}
-	<p>To be Implemented...</p>
+	<!-- <p>To be Implemented...</p> -->
 	<h4>Shared Music:</h4>
 	{% if songList %}
 		{% for song in songList %}
 			{% if song.shared %}
-				{{ song.title }} WITH {{ song.shared }} <br><br>
+				{{ song.title }} WITH 
+				{% for shared in song.shared %}
+					{{ shared }}&nbsp;,
+				{% endfor %}
+				<br><br>			
 			{% endif %}
 		{% endfor %}
 	{% endif %}
@@ -136,12 +185,3 @@
 		</form>
 	{% endif %}
 {% endblock %}
-
-<div>
-	<div class="col-xs-3">
-		<p>hello</p>
-	</div>
-	<div class="col-xs-3">
-		<p>hello</p>
-	</div>
-</div>

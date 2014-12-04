@@ -15,11 +15,11 @@
 
         {% if songs %}
             <h4>All Songs</h4>
-            <audio preload></audio>
+            <!-- <audio preload></audio> -->
             <form action="{% url 'artist' artist_name_slug=self %}" method = "post" enctype = "multipart/form-data">
             {% csrf_token %}
             <div class="table-responsive">
-                <table class="sortable-theme-bootstrap table-hover" data-sortable >
+                <table id="myTable" class="sortable-theme-bootstrap table-hover" data-sortable >
                     <thead>
                     
                                 <th data-sorted="false" data-sorted-direction="descending" class="col-md-4" style="font-weight:bold;"> TITLE </th>

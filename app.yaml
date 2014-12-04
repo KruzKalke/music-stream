@@ -1,5 +1,5 @@
 application: music-stream
-version: 3-6
+version: 5-3
 runtime: python27
 api_version: 1
 threadsafe: yes
