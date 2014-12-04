@@ -4,25 +4,98 @@
 
 
     
-        <h3>Search results for:  {{query}}</h3>
+        <h2 class="search-heading">Search results for:  {{query}}</h2>
         {% if artists %}
-            <h4>Artists</h4>
+            <h3 class="search-cat">Artists</h3>
                 {% for artist in artists %}
-                    <p><a href="/artist/{{ artist.artist_slug }}">{{ artist.artist }}</a></p>
+                    <p class="search-result"><a href="/artist/{{ artist.artist_slug }}">{{ artist.artist }}</a></p>
                 {% endfor %}
         {% endif %}
         {% if albums %}
-            <h4>Albums</h4>
+            <h3 class="search-cat">Albums</h3>
                 {% for album in albums %}
-                    <p><a href="/album/{{ album.album_slug }}">{{ album.album }}</a></p>
+                    <p class="search-result"><a href="/album/{{ album.album_slug }}">{{ album.album }}</a></p>
                 {% endfor %}
         {% endif %}
-        {% if songs %}
-            <h4>Songs</h4>
-                {% for song in songs %}
-                    <p>{{ song.title }}</a></p>
+        {% if songList %}
+            <h3 class="search-cat">Songs</h3>
+            <div class="table-responsive">
+                <table id="myTable" class="sortable-theme-bootstrap table-hover" data-sortable >
+                    <thead>                 
+                                <th data-sorted="false" data-sorted-direction="descending" class="col-xs-5 col-md-5" style="font-weight:bold;"> TITLE </th>
+                                <th data-sorted="false" class="col-xs-2 col-md-2" style="font-weight:bold;"> ARTIST </th>
+                                <th data-sorted="false" class="col-xs-1 col-md-1 glyphicon glyphicon-time" style="font-weight:bold;"> </th>
+                                <th data-sorted="false" class="col-xs-4 col-md-4" style="font-weight:bold;"> ALBUM </th>
+                    </thead>
+
+                    <tbody>         
+                        {% for song in songList %}  
+                        <tr id = "row{{forloop.counter}}">
+                            <td id="table-value" class = "song" data-value="{{song.title}}"> <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.title}}</a></td>
+                            <td id="table-value" > {{song.artist}}</td> 
+                            <td id="table-duration{{forloop.counter}}" > 
+                                <script type="text/javascript"> 
+                               var a = "{{song.length}}";
+                                 var display = document.getElementById("table-duration" + {{forloop.counter}});
+                                 var duration = Math.floor(a / 60) + ":" + a % 60;
+                                 display.innerHTML = duration;
+                                 //document.getElementById('duration').ineerHTML = duration.val();
+                                 //alert(duration);
+
+
+                                    
+                                </script>
+                             </td>
+                            <td id="table-value" >   {{song.album}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>            
+                </table>    
+            </div>
+
+
+
+<ul id="contextMenu" class="dropdown-menu" role="menu">
+    <li><a tabindex="-1" href="#">Play</a></li>
+   <!-- <li><a tabindex="-1" href="#"></a></li>
+    <li><a tabindex="-1" href="#"></a></li>
+    <li class="divider"></li>
+    <li><a tabindex="-1" href="#">Separated link</a></li>
+    -->
+</ul>
+
+
+
+
+<!--
+
+        <div class="song-list-div">
+            <div class="col-xs-5">
+                <ol class="song-list">
+                {% for song in songList %}
+                    <li class="song-list-entry">
+                        <a href="#" data-src="{{ song.songfile.url }}" class="song-name">{{ song.file_name }}</a>
+                    </li>
                 {% endfor %}
-        {% endif %}
+                </ol>
+            </div>
+-->
+
+<!--            <div class="col-xs-1">
+                <ul class="song-list">
+                {% for music in musics %}
+                    <li>
+                        <a href="{{ music.musicfile.url }}"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
+                        <div class="hr-clear"></div>
+
+                    </li>
+                {% endfor %}
+                </ul>
+            </div> -->
+        </div>
+    {% else %}
+        <p>:( Your library is empty! Get started by uploading a song below.</p>
+    {% endif %}
 
     
 

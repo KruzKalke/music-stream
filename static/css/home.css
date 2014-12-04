@@ -22,10 +22,6 @@
 .control-btn:hover {
 	color: blue;
 }
-
-
-
-
 /**/
 
 
@@ -35,12 +31,24 @@
 	margin-top: 5px;
 	color: #ECF0F1;
 }
+/**/
 
 
+/*  Search */
+.search-heading {
+	/*margin-bottom: 40px;*/
+}
+
+.search-cat {
+	margin-top: 40px;
+}
+
+.search-result {
+	font-size: 18px;
+}
 
 
 /**/
-
 
 
 

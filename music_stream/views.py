@@ -38,7 +38,7 @@ def index(request):
 def search(request):
 	context_dict = {}
 	context_dict['artists'] = None
-	context_dict['songs'] = None
+	context_dict['songList'] = None
 	context_dict['albums'] = None
 	context_dict['query'] = None
 
@@ -55,7 +55,7 @@ def search(request):
 					songs = Song.objects.filter(owner=request.user.username).filter(Q(title__icontains=query) | Q(artist__icontains=query) | Q(album__icontains=query))
 					context_dict['query'] = query
 					context_dict['artists'] = artists
-					context_dict['songs'] = songs
+					context_dict['songList'] = songs
 					context_dict['albums'] = albums
 					return render(request,'music_stream/search.html',context_dict)
 
@@ -71,7 +71,9 @@ def search(request):
 def album(request,album_name_slug):
 	context_dict = {}
 	songs = Song.objects.filter(owner=request.user.username).filter(album_slug__icontains=album_name_slug)
-	context_dict['songs'] = songs
+	album = Song.objects.filter(album_slug=album_name_slug).values('album').distinct()
+	context_dict['songList'] = songs
+	context_dict['album'] = album
 
 	return render(request, 'music_stream/album.html',context_dict)
 
@@ -79,8 +81,10 @@ def artist(request,artist_name_slug):
 	context_dict = {}
 	albums = Song.objects.filter(owner=request.user.username).filter(artist_slug__icontains=artist_name_slug).order_by().values('album','album_slug').distinct()
 	songs = Song.objects.filter(owner=request.user.username).filter(artist_slug__icontains=artist_name_slug)
+	artist = Song.objects.filter(artist_slug=artist_name_slug).values('artist').distinct()
+	context_dict['artist'] = artist
 	context_dict['albums'] = albums
-	context_dict['songs'] = songs
+	context_dict['songList'] = songs
 
 
 	return render(request, 'music_stream/artist.html',context_dict)
