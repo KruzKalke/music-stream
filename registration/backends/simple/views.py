@@ -20,7 +20,7 @@ class RegistrationView(BaseRegistrationView):
         UserModel().objects.create_user(username, email, password)
 
         new_user = authenticate(username=username, password=password)
-        login(request, new_user)
+        # login(request, new_user)
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)

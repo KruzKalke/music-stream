@@ -90,7 +90,7 @@
 	</form>
     {% else %}
         <p>:( Your library is empty! Get started by uploading a song above.</p>
-        
+
     {% endif %}
 
     {% if sharedList %}
@@ -185,3 +185,15 @@
 		</form>
 	{% endif %}
 {% endblock %}
+{% block indexTable %}
+         var $table2 = $(Table2);
+         {% endblock %}
+{% block indexTable2 %}
+         for(var i = 1; i < document.getElementById("Table2").rows.length; i++)
+         {
+            var $row = $table2.find("tr:nth-child(" +  i +  ")");
+            var $target_td = $row.find("td:nth-child(1) a");
+            queue.push($target_td.attr('data-src'));
+            //alert($target_td.attr('data-src'));
+         }
+         {% endblock %}

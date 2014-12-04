@@ -34,6 +34,9 @@
 				 var queue = [];	
 				 var index = 0;
 				 var $table = $(myTable);
+         {% block indexTable %}
+         
+         {% endblock %}
 			 //Goes through the table, and then pushes the url into table
 
 			 for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
@@ -74,6 +77,8 @@
 						queue.push($target_td.attr('data-src'));
 						//alert($target_td.attr('data-src'));
 				 }
+         {% block indexTable2 %}
+         {% endblock %}
 
          e.preventDefault();				
 				 $('.btnPlay').removeClass('glyphicon-play');
