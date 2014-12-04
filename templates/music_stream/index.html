@@ -88,9 +88,12 @@
 		<br>
 		
 	</form>
+	
     {% else %}
-        <p>:( Your library is empty! Get started by uploading a song above.</p>
+    
 
+        <p>:( Your library is empty! Get started by uploading a song above.</p>
+        <table id="myTable"></table>
     {% endif %}
 
     {% if sharedList %}
@@ -144,6 +147,7 @@
 		{% csrf_token %}
 		<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
 	</form> -->
+	<table id="Table2"></table>
     {% endif %}
     <!-- <h4>Test</h4> -->
     
@@ -185,7 +189,7 @@
 		</form>
 	{% endif %}
 {% endblock %}
-{% block indexTable %}
+{% block indexTable2Var %}
          var $table2 = $(Table2);
          {% endblock %}
 {% block indexTable2 %}
@@ -196,4 +200,15 @@
             queue.push($target_td.attr('data-src'));
             //alert($target_td.attr('data-src'));
          }
-         {% endblock %}
+{% endblock %}
+{% block indexTableVar %}
+	{% if sharedList %}
+		{% if songList %}
+			{{ block.super }}
+		{% else %}
+		var $table = $(Table2); var $mainTable = "Table2";
+		{% endif %}	
+	{% else %}
+		{{ block.super }}
+	{% endif %}
+{% endblock %}

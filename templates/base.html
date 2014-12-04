@@ -33,13 +33,16 @@
      $(function() {
 				 var queue = [];	
 				 var index = 0;
+         {% block indexTableVar %}
 				 var $table = $(myTable);
-         {% block indexTable %}
+         var $mainTable = "myTable";
+         {% endblock %}
+         {% block indexTable2Var %}
          
          {% endblock %}
 			 //Goes through the table, and then pushes the url into table
 
-			 for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
+			 for(var i = 1; i < document.getElementById($mainTable).rows.length; i++)
 			 {
 					var $row = $table.find("tr:nth-child(" +  i +  ")");
 				 	var $target_td = $row.find("td:nth-child(1) a");
@@ -70,6 +73,7 @@
 				 //Rebuild the queue. So it will adjust to the table that the user is currertly
 				 //looking at.
 				 queue = [];
+         {% block indexTable %}
 				 for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
 				 {
 						var $row = $table.find("tr:nth-child(" +  i +  ")");
@@ -77,6 +81,7 @@
 						queue.push($target_td.attr('data-src'));
 						//alert($target_td.attr('data-src'));
 				 }
+         {% endblock %}
          {% block indexTable2 %}
          {% endblock %}
 
