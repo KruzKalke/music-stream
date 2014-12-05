@@ -110,6 +110,11 @@ def index(request):
 
 		playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
 		for p in playlists:
+			for s in p.songs:
+				try:
+					Song.objects.get(id=s)
+				except:
+					p.remove(s)
 			q = p.songs[:]
 			p.songs = []
 			for s in q:
