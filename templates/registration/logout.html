@@ -1,0 +1,13 @@
+<head>
+	<meta http-equiv ="refresh" content = "1; url={% url 'auth_login' %}">
+	<script type="text/javascript">
+		window.location.href = "{% url 'auth_login' %}"
+	</script>
+</head>
+
+
+{% block body_block %}
+<h1>Logged Out</h1>
+        <p>You are now logged out.</p><br>
+        <a href="{% url 'auth_login' %}">Login</a>
+{% endblock %}

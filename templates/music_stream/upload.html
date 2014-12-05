@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+
+    <h3 style="color:black;font-size:16px;">Add Songs</h3>
+        <!-- Upload form. Note enctype attribute! -->
+        {% load filetransfers %}
+        <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+            {% render_upload_data upload_data %}
+            <table>{{ form }}</table>
+           <!-- <input style="width:30%;margin-bottom:20px;"  id="id_songfile" name="songfile" type="file" /> -->
+           <input style="width:30%;" class="btn btn-default btn-md" type="submit" name="upload_submit" value="Upload" />
+        </form>
+
+{% endblock %}

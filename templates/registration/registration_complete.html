@@ -1,0 +1,12 @@
+<head>
+	<meta http-equiv ="refresh" content = "1; url={% url 'auth_login' %}">
+	<script type="text/javascript">
+		window.location.href = "{% url 'auth_login' %}"
+	</script>
+</head>
+
+
+{% block body_block %}
+<h1>Registration Complete</h1>
+        <p>You are now registered</p>
+{% endblock %}
