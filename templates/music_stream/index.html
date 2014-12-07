@@ -181,15 +181,18 @@
 {% endblock %} {% block indexTable2Var %}
          var $table2 = $(Table2);
          {% endblock %}
-{% block indexTable2 %}
+<!-- {% block indexTable2 %}
          for(var i = 1; i < document.getElementById("Table2").rows.length; i++)
          {
             var $row = $table2.find("tr:nth-child(" +  i +  ")");
             var $target_td = $row.find("td:nth-child(1) a");
             queue.push($target_td.attr('data-src'));
+						queueSongName.push($target_td.text());	
+						var $target_td = $row.find("td:nth-child(4)");
+						queueArtist.push($target_td.text());
             //alert($target_td.attr('data-src'));
          }
-{% endblock %}
+{% endblock %} -->
 {% block indexTableVar %}
 	{% if sharedList %}
 		{% if songList %}

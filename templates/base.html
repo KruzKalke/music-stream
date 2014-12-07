@@ -32,24 +32,47 @@
 		<script>
      $(function() {
 				 var queue = [];	
+				 var queueArtist = [];
+				 var queueSongName = [];
 				 var index = 0;
-         {% block indexTableVar %}
-				 var $table = $(myTable);
-         var $mainTable = "myTable";
-         {% endblock %}
-         {% block indexTable2Var %}
-         
-         {% endblock %}
 			 //Goes through the table, and then pushes the url into table
-			 for(var i = 1; i < document.getElementById($mainTable).rows.length; i++)
-			 {
-					var $row = $table.find("tr:nth-child(" +  i +  ")");
-				 	var $target_td = $row.find("td:nth-child(1) a");
-					queue.push($target_td.attr('data-src'));
-					//alert($target_td.attr('data-src'));
-			 }
-				//alert(queue[0]);
-				       // Setup the player to autoplay the next track
+			 
+			var buildQueue = function() {	 
+				var $table = $(myTable);
+				for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
+				 {
+						var $row = $table.find("tr:nth-child(" +  i +  ")");
+						var $target_td = $row.find("td:nth-child(1) a");
+						queue.push($target_td.attr('data-src'));
+						queueSongName.push($target_td.text());
+						var $target_td = $row.find("td:nth-child(4)");
+						queueArtist.push($target_td.text());
+
+				 }
+
+				 var $table2 = $(Table2)
+				 for(var i = 1; i < document.getElementById("Table2").rows.length; i++)
+				 {
+							var $row = $table2.find("tr:nth-child(" +  i +  ")");
+							var $target_td = $row.find("td:nth-child(1) a");
+							queue.push($target_td.attr('data-src'));
+							queueSongName.push($target_td.text());	
+							var $target_td = $row.find("td:nth-child(4)");
+							queueArtist.push($target_td.text());
+				 }
+			};
+			
+			var playAdjust = function() {
+				 audio.load(queue[index]);
+  			 $('.si-artist').html(queueArtist[index]);
+			   $('.si-title').html(queueSongName[index]);
+       	 audio.play();
+			};	
+	
+			buildQueue();
+
+
+			 // Setup the player to autoplay the next track
        var a = audiojs.createAll({
          trackEnded: function() { 
 					index++;
@@ -64,30 +87,23 @@
        // Load in the first track
        var audio = a[0];
  			 audio.load(queue[index]);
+			 $('.si-artist').html(queueArtist[index]);
+			 $('.si-title').html(queueSongName[index]);
        // Load in a track on click
-       $('.song').click(function(e) {
-				
+       $('.song').click(function(e) {	
 				 //Rebuild the queue. So it will adjust to the table that the user is currertly
 				 //looking at.
 				 queue = [];
-         {% block indexTable %}
-				 for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
-				 {
-						var $row = $table.find("tr:nth-child(" +  i +  ")");
-						var $target_td = $row.find("td:nth-child(1) a");
-						queue.push($target_td.attr('data-src'));
-						//alert($target_td.attr('data-src'));
-				 }
-         {% endblock %}
-         {% block indexTable2 %}
-         {% endblock %}
-         e.preventDefault();				
+				 queueSongName = [];
+				 queueArtist = [];
+				 buildQueue();
+
+	       e.preventDefault();				
 				 $('.btnPlay').removeClass('glyphicon-play');
 				 $('.btnPlay').addClass('glyphicon-pause');
 				 index = jQuery.inArray($('a', this).attr('data-src'), queue);
-	     	 audio.load(queue[index]);
-         audio.play();
-       });
+	     	 playAdjust();	  
+			 });
 		document.getElementById('abc').onclick = function() {
 		    var className = ' ' + abc.className + ' ';
 		    if ( ~className.indexOf(' glyphicon-play ') ) {
@@ -104,17 +120,14 @@
 				if(index < queue.length-1)
 			  {
 				 index++;
-				 //alert(index);
-				 audio.load(queue[index]);
-				 audio.play();
+				 playAdjust();
 			  } 
 			});
 			
 			$(".glyphicon-backward").click(function(e) {
 				if(index > 0) {
 		 		 index--;
-				 audio.load(queue[index]);
-				 audio.play();
+				 playAdjust();
 				}
 			});				
        // Keyboard shortcuts
@@ -127,10 +140,8 @@
 						if(index < queue.length-1)
 						 {
 							 index++;
-							 //alert(index);
-							 audio.load(queue[index]);
-							 audio.play();
-						 }
+							 playAdjust();
+					 }
      			}
            // back arrow
          		else if (unicode == 37)
@@ -138,16 +149,14 @@
 								if(index > 0)
 								{
 									index--;
-									audio.load(queue[index]);
-									audio.play();
-								}          		
+									playAdjust();
+							}          		
            // spacebar
           //} else if (unicode == 32) {
            // audio.playPause();
          //}
        			}
-			})
-    
+			}) 
 		 });
 window.addEventListener("DOMContentLoaded", function () {
 
@@ -214,7 +223,7 @@ window.addEventListener("DOMContentLoaded", function () {
          <ul class="nav navbar-nav">
             <div class="container-fluid">
             	<div class="song-information">
-            		<span class="si-artist"></span>Skyfall - ADELLE<span class="si-title"></span>
+            		 <span class="si-title"></span> - <span class="si-artist"></span>
             	</div>
             	<audio preload></audio>
             </div>
