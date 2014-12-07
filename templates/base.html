@@ -267,7 +267,7 @@ window.addEventListener("DOMContentLoaded", function () {
 		    <ul class="dropdown-menu" role="menu">
 		     	{% if zAlbums %}
 		    		{% for album,album_slug in zAlbums %}
-						<li><a href="{% url 'artist' album_slug %}">{{ album }} </a></li>
+						<li><a href="{% url 'album' album_slug %}">{{ album }} </a></li>
 					{% endfor %}
 				{% endif %}
 		    </ul>

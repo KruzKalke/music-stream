@@ -41,7 +41,7 @@ def index(request):
 		album_slugs = sorted(album_slugs)
 		zArtists = zip(artists,artist_slugs)
 		zAlbums = zip(albums,album_slugs)
-
+		playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
 
 		preShare = set([s for s in Song.objects.all()])
 		sharedList = []
@@ -108,7 +108,7 @@ def index(request):
 						p.delete()
 
 
-		playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+		
 		for p in playlists:
 			for s in p.songs:
 				try:
@@ -125,6 +125,7 @@ def index(request):
 		upload_url, upload_data = prepare_upload(request, view_url)
 			# Render list page with the documents and the form
 		# return render(request,'music_stream/index.html',context_dict)
+
 		return render_to_response(
 							'music_stream/index.html',
 							{'error': error, 'songList': songList, 'form': form, 'upload_url': upload_url, 'upload_data': upload_data, 'sharedList': sharedList, 'playlists': playlists, 'zArtists':zArtists, 'zAlbums':zAlbums},
@@ -137,9 +138,24 @@ def search(request):
 	
 
 	if request.user.is_authenticated():
+
 		if request.method == 'POST':
 			if 'query' in request.POST:
 				context_dict = {}
+				artists = set([s.artist for s in Song.objects.filter(owner=request.user.username)])
+				artists = sorted(artists)
+				artist_slugs = set([s.artist_slug for s in Song.objects.filter(owner=request.user.username)])
+				artist_slugs = sorted(artist_slugs)
+				albums = set([s.album for s in Song.objects.filter(owner=request.user.username)])
+				albums = sorted(albums)
+				album_slugs = set([s.album_slug for s in Song.objects.filter(owner=request.user.username)])
+				album_slugs = sorted(album_slugs)
+				zArtists = zip(artists,artist_slugs)
+				zAlbums = zip(albums,album_slugs)
+				playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+				context_dict['zArtists'] = zArtists
+				context_dict['zAlbums'] = zAlbums
+				context_dict['playlists'] = playlists
 				context_dict['artists'] = None
 				context_dict['songs'] = None
 				context_dict['albums'] = None
@@ -187,6 +203,20 @@ def search(request):
 
 def album(request,album_name_slug):
 	context_dict = {}
+	artists = set([s.artist for s in Song.objects.filter(owner=request.user.username)])
+	artists = sorted(artists)
+	artist_slugs = set([s.artist_slug for s in Song.objects.filter(owner=request.user.username)])
+	artist_slugs = sorted(artist_slugs)
+	albums = set([s.album for s in Song.objects.filter(owner=request.user.username)])
+	albums = sorted(albums)
+	album_slugs = set([s.album_slug for s in Song.objects.filter(owner=request.user.username)])
+	album_slugs = sorted(album_slugs)
+	zArtists = zip(artists,artist_slugs)
+	zAlbums = zip(albums,album_slugs)
+	playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+	context_dict['zArtists'] = zArtists
+	context_dict['zAlbums'] = zAlbums
+	context_dict['playlists'] = playlists
 	songs = Song.objects.filter(owner=request.user.username).filter(album_slug=album_name_slug)
 	if songs:
 		context_dict['songs'] = songs
@@ -211,6 +241,20 @@ def album(request,album_name_slug):
 
 def playlist(request, playlist_name_slug):
 	context_dict = {}
+	artists = set([s.artist for s in Song.objects.filter(owner=request.user.username)])
+	artists = sorted(artists)
+	artist_slugs = set([s.artist_slug for s in Song.objects.filter(owner=request.user.username)])
+	artist_slugs = sorted(artist_slugs)
+	albums = set([s.album for s in Song.objects.filter(owner=request.user.username)])
+	albums = sorted(albums)
+	album_slugs = set([s.album_slug for s in Song.objects.filter(owner=request.user.username)])
+	album_slugs = sorted(album_slugs)
+	zArtists = zip(artists,artist_slugs)
+	zAlbums = zip(albums,album_slugs)
+	playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+	context_dict['zArtists'] = zArtists
+	context_dict['zAlbums'] = zAlbums
+	context_dict['playlists'] = playlists
 	playlist = Playlist.objects.filter(owner=request.user.username).get(name_slug = playlist_name_slug)
 	if playlist:
 		q = playlist.songs[:]
@@ -227,6 +271,21 @@ def upload(request):
 	upload_url = blobstore.create_upload_url('/')
 	view_url = reverse('music_stream.views.index')
 	if request.user.is_authenticated():
+		context_dict={}
+		artists = set([s.artist for s in Song.objects.filter(owner=request.user.username)])
+		artists = sorted(artists)
+		artist_slugs = set([s.artist_slug for s in Song.objects.filter(owner=request.user.username)])
+		artist_slugs = sorted(artist_slugs)
+		albums = set([s.album for s in Song.objects.filter(owner=request.user.username)])
+		albums = sorted(albums)
+		album_slugs = set([s.album_slug for s in Song.objects.filter(owner=request.user.username)])
+		album_slugs = sorted(album_slugs)
+		zArtists = zip(artists,artist_slugs)
+		zAlbums = zip(albums,album_slugs)
+		playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+		context_dict['zArtists'] = zArtists
+		context_dict['zAlbums'] = zAlbums
+		context_dict['playlists'] = playlists
 		if 'upload_submit' in request.POST:
 			form = SongForm(request.POST, request.FILES)
 			if form.is_valid():
@@ -243,9 +302,12 @@ def upload(request):
 		form = SongForm() # A empty, unbound forms
 			# Render list page with the documents and the form
 		# return render(request,'music_stream/index.html',context_dict)
+		context_dict['upload_url'] = upload_url
+		context_dict['upload_data'] = upload_data
+		context_dict['form'] = form
 		return render_to_response(
 							'music_stream/upload.html',
-							{'upload_url': upload_url, 'upload_data': upload_data,'form':form},
+							context_dict,
 							context_instance=RequestContext(request)
 							)
 	return redirect('accounts/login', request)
@@ -255,6 +317,20 @@ def upload(request):
 
 def artist(request,artist_name_slug):
 	context_dict = {}
+	artists = set([s.artist for s in Song.objects.filter(owner=request.user.username)])
+	artists = sorted(artists)
+	artist_slugs = set([s.artist_slug for s in Song.objects.filter(owner=request.user.username)])
+	artist_slugs = sorted(artist_slugs)
+	albums = set([s.album for s in Song.objects.filter(owner=request.user.username)])
+	albums = sorted(albums)
+	album_slugs = set([s.album_slug for s in Song.objects.filter(owner=request.user.username)])
+	album_slugs = sorted(album_slugs)
+	zArtists = zip(artists,artist_slugs)
+	zAlbums = zip(albums,album_slugs)
+	playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+	context_dict['zArtists'] = zArtists
+	context_dict['zAlbums'] = zAlbums
+	context_dict['playlists'] = playlists
 	songs = Song.objects.filter(owner=request.user.username).filter(artist_slug=artist_name_slug)
 	if songs:
 		albumz = set([s.album for s in Song.objects.filter(owner=request.user.username).filter(artist_slug=artist_name_slug)])
@@ -292,6 +368,21 @@ def blob(request):
 	if request.user.is_authenticated():
 		songList = Song.objects.all()
 		error= ''
+		context_dict = {}
+		artists = set([s.artist for s in Song.objects.filter(owner=request.user.username)])
+		artists = sorted(artists)
+		artist_slugs = set([s.artist_slug for s in Song.objects.filter(owner=request.user.username)])
+		artist_slugs = sorted(artist_slugs)
+		albums = set([s.album for s in Song.objects.filter(owner=request.user.username)])
+		albums = sorted(albums)
+		album_slugs = set([s.album_slug for s in Song.objects.filter(owner=request.user.username)])
+		album_slugs = sorted(album_slugs)
+		zArtists = zip(artists,artist_slugs)
+		zAlbums = zip(albums,album_slugs)
+		playlists = set([p for p in Playlist.objects.filter(owner= request.user.username)])
+		context_dict['zArtists'] = zArtists
+		context_dict['zAlbums'] = zAlbums
+		context_dict['playlists'] = playlists
 		if request.method == 'POST':
 			if request.user.username == 'test':
 				if 'purge_all' in request.POST:
@@ -305,10 +396,11 @@ def blob(request):
 							s.delete()
 			else:
 				error= 'You\'re not authorized to do that...'
-		
+		context_dict['songList'] = songList
+		context_dict['error'] = error
 		return render_to_response(
 								'music_stream/list.html',
-								{'songList': songList, 'error': error},
+								context_dict,
 								context_instance=RequestContext(request)
 								)
 	else:
