@@ -34,11 +34,13 @@
 
 
 		</div><br>
-		<input class="btn btn-primary" type="submit" name="purge_selection" value="Delete Selection" />
-		<input class="btn btn-primary" type="submit" name="purge_all" value="DELETE ALL" />
+		<input id="dsel" class="btn btn-primary" type="submit" name="purge_selection" value="Delete Selection" />
+		<!-- <input class="btn btn-primary" type="submit" name="purge_all" value="DELETE ALL" /> -->
 	</form>
 	{% else %}
 		<p> Requested Album is Empty </p>
     {% endif %}
+
+    <table id="Table2"></table>
 
 {% endblock %}
