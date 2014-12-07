@@ -36,7 +36,9 @@
 				 var queueSongName = [];
 				 var index = 0;
 			 //Goes through the table, and then pushes the url into table
-			 
+			
+			//alert("HELLO?");			 
+
 			var buildQueue = function() {	 
 				var $table = $(myTable);
 				for(var i = 1; i < document.getElementById("myTable").rows.length; i++)
@@ -47,7 +49,7 @@
 						queueSongName.push($target_td.text());
 						var $target_td = $row.find("td:nth-child(4)");
 						queueArtist.push($target_td.text());
-
+						//alert(
 				 }
 
 				 var $table2 = $(Table2)

@@ -32,6 +32,7 @@
                     {% for song in songs %}
                     {% url "music_stream.views.serve" pk=song.pk as fallback_url %} 
                     <tr>
+
                                 <td class = "song" data-value="{{song.title}}"> <a href="#" data-src="{% firstof upload.file|public_download_url fallback_url %}" class="song-name">{{ song.title}}</a></td>
                                 <td> <a href="{% url 'album' album_name_slug=song.album_slug %}">{{song.album}}</a></td>
                                 <td> <a href="{% url 'artist' artist_name_slug=song.artist_slug %}">{{song.artist}}</a></td>
