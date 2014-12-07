@@ -121,8 +121,8 @@
 											
 										</script>
 									 </td>
-								<td> <a href="{% url 'album' album_name_slug=song.album_slug %}">{{song.album}}</a></td>
-								<td> <a href="{% url 'artist' artist_name_slug=song.artist_slug %}">{{song.artist}}</a></td>
+								<td> {{song.album}}</td>
+								<td> {{song.artist}}</td>
 								<td>&nbsp;&nbsp;&nbsp;<input type="checkbox" name ="{{ song.id }}" value = "{{ song.title }}"></td>
 					</tr>
 					{% endfor %}
