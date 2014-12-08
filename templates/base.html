@@ -198,6 +198,13 @@ window.addEventListener("DOMContentLoaded", function () {
 	  form.click();
 	});
 });
+
+window.addEventListener("DOMContentLoaded", function () {
+	var form = document.getElementById("upSong");
+	document.getElementById("uploadSong").addEventListener("click", function () {
+	  form.click();
+	});
+});
 	
 
    </script>
@@ -295,10 +302,11 @@ window.addEventListener("DOMContentLoaded", function () {
 		    </ul>
 		</div>
 	</div>
-	<h4 class="h-actions">Actions</h4>
+	<h4 class="h-actions">Actions</h4><form action = "{% url 'upload' %}">
 	<div class="btn-group-vertical" role="group" aria-label="...">
 		<div class="btn-group" role="group">
-			<button type="button" id="uploadSong" class="btn btn-default"><a style="color:#333;" href="{% url 'upload' %}">Add a Song</a></button>
+			<!-- <button type="button" id="uploadSong" class="btn btn-default">Add a Song</button> -->
+			<input id="upSong" name="ups" value="Add a Song" type="submit" class="btn btn-default"></form>
 		</div>
 		<div class="btn-group" role="group">
 			<button type="button" id="createPlaylist" class="btn btn-default">Create Playlist</button>
