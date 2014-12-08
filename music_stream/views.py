@@ -257,6 +257,15 @@ def playlist(request, playlist_name_slug):
 	context_dict['playlists'] = playlists
 	playlist = Playlist.objects.filter(owner=request.user.username).get(name_slug = playlist_name_slug)
 	if playlist:
+		
+		if request.method == 'POST':
+			if 'remove' in request.POST:
+				for s in playlist.songs:
+					if str(s) in request.POST:
+						playlist.remove(s);
+			if 'delete' in request.POST:
+				playlist.delete()
+				return HttpResponseRedirect(reverse('music_stream.views.index'))
 		q = playlist.songs[:]
 		playlist.songs = []
 		for s in q:
@@ -264,6 +273,8 @@ def playlist(request, playlist_name_slug):
 		context_dict['self'] = playlist_name_slug
 		context_dict['playlist'] = playlist
 		return render(request, 'music_stream/playlist.html',context_dict)
+		
+
 	else:
 		return HttpResponseRedirect(reverse('music_stream.views.index'))
 
