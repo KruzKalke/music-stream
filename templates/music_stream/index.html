@@ -101,7 +101,7 @@
     <br><br>
     <h4>Shared Music:</h4>
 	<form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
-		<!--<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />-->
+		<input id="ussel" class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
             {% csrf_token %}
 			<div class="table-responsive">
 				<table id="Table2" class="sortable-theme-bootstrap table-hover" data-sortable >
@@ -153,10 +153,10 @@
 		</div><br>
 	</form>
 	{% else %}
-	<!-- <form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
+	<!--<form action="{% url 'index' %}" method = "post" enctype = "multipart/form-data">
 		{% csrf_token %}
 		<input class="btn btn-primary" type="submit" name="deshar" value="Unshare Selected" />
-	</form> -->
+	</form>-->
 	<table id="Table2"></table>
     {% endif %}
     <!-- <h4>Test</h4> -->

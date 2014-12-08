@@ -162,9 +162,6 @@
 			}) 
 		 });
 window.addEventListener("DOMContentLoaded", function () {
-
-
-
 	var form = document.getElementById("cpl");
 	document.getElementById("createPlaylist").addEventListener("click", function () {
 	    var value=prompt("Please enter a playlist name");
@@ -183,6 +180,15 @@ window.addEventListener("DOMContentLoaded", function () {
 	      document.getElementById("shareplay").value = value;
 	   	}
 	  	form.click();
+	});
+});
+
+
+
+window.addEventListener("DOMContentLoaded", function () {
+	var form = document.getElementById("ussel");
+	document.getElementById("unshareSelected").addEventListener("click", function () {
+	  form.click();
 	});
 });
 
@@ -299,6 +305,9 @@ window.addEventListener("DOMContentLoaded", function () {
 		</div>
 		<div class="btn-group" role="group">
 			<button type="button" id="shareSelected" class="btn btn-default">Share Selected</button>
+		</div>
+		<div class="btn-group" role="group">
+			<button type="button" id="unshareSelected" class="btn btn-default">Unshare Selected</button>
 		</div>
 		<div class="btn-group" role="group">
 			<button type="button" id="deleteSelected" class="btn btn-default">Delete Selected</button>
